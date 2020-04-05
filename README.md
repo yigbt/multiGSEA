@@ -1,16 +1,32 @@
 # The `multiGSEA` `R` package
 
-- The [multiGSEA](https://github.com/yigbt/multiGSEA) package was
-  designed to run a robust GSEA-based pathway enrichmemt for multiple
-  omics layers.
-- Pathway definition can be downloaded from up to eight different
-  pathway databases by means of the `graphite` Bioconductor package.
-- Feature mapping for transcripts and proteins towards Entrez Gene
-  IDs, Uniprot, Gene Symbol, RefSeq, Ensembl
-- Metabolite ID mapping to Comptox Dashboard IDs (DTXCID, DTXSID),
-  CAS-numbers, Pubchem IDs (CID, SID), HMDB, KEGG, and ChEBI
-- Enrichment scores and p-values are shown for each layer separately
-  and aggregated
+The `multiGSEA` package was designed to run a robust GSEA-based pathway
+enrichment for multiple omics layers. The enrichment is calculated for each
+omics layer separately and aggregated p-values are calculated afterwards to
+derive a composite multi-omics pathway enrichment.
+
+Pathway definitions can be downloaded from up to eight different
+pathway databases by means of the
+[`graphite`](http://bioconductor.org/packages/release/bioc/html/graphite.html)
+Bioconductor package.
+
+Features of the transcriptome and proteome level can be mapped to the following ID formats:
+
+	* Entrez Gene ID
+	* Uniprot IDs
+	* Gene Symbols
+	* RefSeq
+	* Ensembl
+	
+Features of the metabolome layer can be mapped to:
+
+	* Comptox Dashboard IDs (DTXCID, DTXSID)
+	* CAS-RN numbers
+	* Pubchem IDs (CID)
+	* HMDB IDs
+	* KEGG IDs
+	* ChEBI IDs
+
   
 # Install
 
@@ -26,4 +42,16 @@ Once installed, just load the *multiGSEA* package with:
     library(multiGSEA)
 
 
+# Workflow
 
+A common workflow is exemplified in the package vignette and is typically separated
+in the following steps:
+
+1. Load required libraries, including the `multiGSEA` package, and omics data sets.
+2. Create data structure for enrichment analysis.
+3. Download and customize the pathway definitions.
+4. Run the pathway enrichment for each omics layer.
+5. Calculate the aggregated pathway enrichment.
+
+
+For more information please have a look in the vignette.
