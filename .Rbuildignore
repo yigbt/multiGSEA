@@ -1,0 +1,7 @@
+Makefile
+^paper
+.Rhistory
+.gitignore
+README.md
+conda.*
+multiGSEA_.*gz
