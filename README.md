@@ -30,11 +30,27 @@ Features of the metabolome layer can be mapped to:
   
 # Install
 
+A working environment where `multiGSEA` can easily be installed is
+provided as conda environment yml file in the [github
+repository](https://github.com/yigbt/multiGSEA/conda_environment.yml).
+
+After downloading the file, it can be installed and activated by the following commands:
+
+	conda env create -f path/to/file/conda_environment.yml
+	source activate multiGSEA_testing
+
+
 You can install the most up to date version easily with
 [devtools](https://github.com/hadley/devtools):
 
     install.packages("devtools")
     devtools::install_github("https://github.com/yigbt/multiGSEA")
+
+
+The `multiGSEA` package can also be installed from the command line, subsequent to downloading the package [source file](https://github.com/yigbt/multiGSEA/blob/master/multiGSEA_0.99.0.tar.gz) from the repo:
+
+	cd /path/to/package/
+	R CMD INSTALL multiGSEA_1.0.tar.gz
 
 
 Once installed, just load the *multiGSEA* package with:
