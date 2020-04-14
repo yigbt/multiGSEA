@@ -1,4 +1,4 @@
-name: multiGSEA_3.6.1
+name: multiGSEA
 channels:
   - r
   - conda-forge
@@ -252,5 +252,3 @@ dependencies:
   - xz=5.2.4
   - zlib=1.2.11
   - zstd=1.4.4
-prefix: /home/canzler/anaconda3/envs/multiGSEA_3.6.1
-
