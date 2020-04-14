@@ -34,81 +34,84 @@
 #'
 #' @export
 getFeatures <- function( pathway, which = "proteins", org = "hsapiens", returntype = "SYMBOL"){
-
-  if( which != "proteins" & which != "metabolites"){
-    stop( "Only 'proteins' and 'metabolites' are supported for 'which'.", 
-          call. = FALSE)
-  }
-  
-  org <- tolower( org)
-  
-  ## check for the correct organism 
-  if( !( org %in% getOrganisms() )){
-    stop( "Please insert a correct organism name! Use getOrganisms() to see all supported organisms.", 
-          call. = FALSE)
-  }
-
-  ## extract the features (genes/proteins or metabolites) from the pathway nodes.
-  features <- nodes( pathway, which = which)
-
-  if( length( features) == 0) return( list())
-
-  if( which == "proteins"){
-    # Remove indentifier strings
-    # Keep only the IDs
-    if( startsWith( features[1], "ENTREZ")){ 
-      mapped <- gsub( "ENTREZID:", "", features)
-      mapped <- getGeneMapping( features = mapped, keytype = "ENTREZID",
-                                org = org, returntype = returntype)
+    
+    if( which != "proteins" & which != "metabolites"){
+        stop( "Only 'proteins' and 'metabolites' are supported for 'which'.",
+              call. = FALSE)
     }
-    if( startsWith( features[1], "UNIPROT")){
-      mapped <- gsub( "UNIPROT:", "", features)
-      mapped <- getGeneMapping( features = mapped, keytype = "UNIPROT",
-                                org = org, returntype = returntype) 
+    
+    org <- tolower( org)
+    
+    ## check for the correct organism 
+    if( !( org %in% getOrganisms() )){
+        stop( "Please insert a correct organism name! Use getOrganisms() to see all supported organisms.", 
+              call. = FALSE)
     }
-  }
+    
+    ## extract the features (genes/proteins or metabolites) from the pathway nodes.
+    features <- nodes( pathway, which = which)
+    
+    if( length( features) == 0) return( list())
+    
+    if( which == "proteins"){
 
-  ## its special for metabolites, because sometimes there are different
-  ## identifiers used in the same pathway
-  if( which == "metabolites"){
-
-    mapped <- c()
-
-    # ChEBI
-    ids <- gsub( "CHEBI:", "", features[ grep("CHEBI", features)])
-    if( returntype != "ChEBI"){
-      mapped <- c( mapped, getMetaboliteMapping( features = ids, 
-                                                 keytype = "ChEBI",
-                                                 returntype = returntype))
-    }else{
-      mapped <- c( mapped, ids)
+        # Remove indentifier strings and keep only the IDs
+        if( startsWith( features[1], "ENTREZ")){ 
+            mapped <- gsub( "ENTREZID:", "", features)
+            mapped <- getGeneMapping( features = mapped, keytype = "ENTREZID",
+                                      org = org, returntype = returntype)
+        }
+        if( startsWith( features[1], "UNIPROT")){
+            mapped <- gsub( "UNIPROT:", "", features)
+            mapped <- getGeneMapping( features = mapped, keytype = "UNIPROT",
+                                      org = org, returntype = returntype) 
+        }
     }
+    
+    ## its special for metabolites, because sometimes there are different
+    ## identifiers used in the same pathway
+    if( which == "metabolites"){
 
-    # KEGG
-    ids <- gsub( "KEGGCOMP:", "", features[ grep( "KEGGCOMP", features)])
-    if( returntype != "KEGG"){
-      mapped <- c( mapped, getMetaboliteMapping( features = ids, 
-                                                 keytype = "KEGG",
-                                                 returntype = returntype))
-    }else{
-      mapped <- c( mapped, ids) 
+        chebi <- mapIDType( features = features, keytype = "CHEBI",
+                            maptype = "ChEBI", returntype = returntype)
+
+        kegg <- mapIDType( features = features, keytype = "KEGGCOMP",
+                           maptype = "KEGG", returntype = returntype)
+
+        pubchem <- mapIDType( features = features, keytype = "PUBCHEM",
+                              maptype = "CID", returntype = returntype)
     }
-
-    # PUBCHEM
-    ids <- gsub( "PUBCHEM:", "", features[ grep( "PUBCHEM", features)])
-    if( returntype != "CID"){
-      mapped <- c( mapped, getMetaboliteMapping( features = ids,
-                                                 keytype = "CID",
-                                                 returntype = returntype))
-    }else{
-      mapped <- c( mapped, ids)
-    }
-  }
-  
-  return( mapped)
-
+    
+    return( c( chebi, kegg, pubchem))
+    
 }
 
+#' Helper function to map only a subset of metabolite IDs
+#' 
+#' This helper function becomes necessary since there are sometimes multiple ID
+#' formats used in a single pathway definition. 
+#' 
+#' @param features List of metabolite feature IDs of the pathway.
+#' @param keytype String specifying the ID format in pathway definition.
+#' @param maptype String specifying the corresponding ID format in multiGSEA.
+#' @param returntype String identifying the ID type that should be mapped.
+#' 
+#' @return List of mapped metabolite IDs.
+mapIDType <- function( features, keytype = "CHEBI", maptype = "ChEBI", returntype = "HMDB"){
+    
+    mapped <- c()
+    ids <- gsub( paste0( keytype, ":"), "", features[ grep( keytype, features)])
+    if( returntype != maptype){
+        mapped <- c( mapped, getMetaboliteMapping( features = ids,
+                                                   keytype = maptype,
+                                                   returntype = returntype))
+    }else{
+        mapped <- c( mapped, ids)
+    }
+    
+    return( mapped)
+    
+}
 
 #' Mapping between pathway encoded genes/proteins and different ID formats.
 #'
@@ -148,39 +151,39 @@ getFeatures <- function( pathway, which = "proteins", org = "hsapiens", returnty
 #'
 #' @export
 getGeneMapping <- function( features, keytype, org = "hsapiens", returntype = "SYMBOL"){
-  
-  org <- tolower( org)
-
-  ## check for the correct organism 
-  if( !( org %in% getOrganisms() )){
-    stop( "Please insert a correct organism name! Use getOrganisms() to see all supported organisms.", 
-          call. = FALSE)
-  }
-
-  db <- getIDMappingDatabase( org)
-
-  if( !str_detect( returntype, regex( "^SYMBOL$|^ENTREZID$|^UNIPROT$|^ENSEMBL$|^REFSEQ$"))){
-    stop( "Insert one of the following ID types to be returned (returntype): SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ", call. = FALSE)
-  }
-
-  ## design the columns field such that we create a triple ID mapping between
-  ## ENTREZIDs, UNIPROT, and gene symbols
-  if( keytype == "UNIPROT"){ col <- unique( c( "SYMBOL", "ENTREZID", returntype))}
-  else{ col <- unique( c( "SYMBOL", "UNIPROT", returntype))} 
-
-  ## run the actual mapping of IDS and return a list of the user-given type
-  map <- tryCatch({
-    map <- select( db, keys = features, columns = col, keytype = keytype)
-    m <- match( unique( map[[ keytype]]), map[[ keytype]])
-    map <- map[ m, ]
-    map[[returntype]][ !is.na( map[[returntype]])]
-  }, 
-  error=function( cond){
-    return(list())
-  })
-
-  return( map)
-
+    
+    org <- tolower( org)
+    
+    ## check for the correct organism 
+    if( !( org %in% getOrganisms() )){
+        stop( "Please insert a correct organism name! Use getOrganisms() to see all supported organisms.", 
+              call. = FALSE)
+    }
+    
+    db <- getIDMappingDatabase( org)
+    
+    if( !str_detect( returntype, regex( "^SYMBOL$|^ENTREZID$|^UNIPROT$|^ENSEMBL$|^REFSEQ$"))){
+        stop( "Insert one of the following ID types to be returned (returntype): SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ", call. = FALSE)
+    }
+    
+    ## design the columns field such that we create a triple ID mapping between
+    ## ENTREZIDs, UNIPROT, and gene symbols
+    if( keytype == "UNIPROT"){ col <- unique( c( "SYMBOL", "ENTREZID", returntype))}
+    else{ col <- unique( c( "SYMBOL", "UNIPROT", returntype))} 
+    
+    ## run the actual mapping of IDS and return a list of the user-given type
+    map <- tryCatch({
+        map <- select( db, keys = features, columns = col, keytype = keytype)
+        m <- match( unique( map[[ keytype]]), map[[ keytype]])
+        map <- map[ m, ]
+        map[[returntype]][ !is.na( map[[returntype]])]
+    }, 
+    error=function( cond){
+        return(list())
+    })
+    
+    return( map)
+    
 }
 
 
@@ -199,13 +202,13 @@ getGeneMapping <- function( features, keytype, org = "hsapiens", returntype = "S
 #' 
 #' @export
 getOrganisms <- function(){
-  
-  orglist <- c( "hsapiens", "rnorvegicus", "mmusculus", "sscrofa", "btaurus",
-             "celegans", "dmelanogaster", "drerio", "ggallus", "xlaevis",
-             "cfamiliaris")
- 
-  return( orglist)
-   
+    
+    orglist <- c( "hsapiens", "rnorvegicus", "mmusculus", "sscrofa",
+                  "btaurus", "celegans", "dmelanogaster", "drerio",
+                  "ggallus", "xlaevis", "cfamiliaris")
+    
+    return( orglist)
+    
 }
 
 
@@ -219,46 +222,46 @@ getOrganisms <- function(){
 #' 
 #' @return AnnotationDbi databse for ID mapping.
 getIDMappingDatabase <- function( organism){
-
-  # check for the installed package to do the human ID mapping
-  if( organism == "hsapiens") pkg <- "org.Hs.eg.db"
-
-  ## check for the installed package to do the rat ID mapping
-  if( organism == "rnorvegicus") pkg <- "org.Rn.eg.db"
-  
-  ## check for the installed package to do the mouse ID mapping
-  if( organism == "mmusculus") pkg <- "org.Mm.eg.db"
-  
-  ## check for the installed package to do the pig ID mapping
-  if( organism == "sscrofa") pkg <- "org.Ss.eg.db"
-  
-  ## check for the installed package to do the bovine ID mapping
-  if( organism == "btaurus") pkg <- "org.Bt.eg.db"
-  
-  ## check for the installed package to do the _C.elegans_ ID mapping
-  if( organism == "celegans") pkg <- "org.Ce.eg.db"
-  
-  ## check for the installed package to do the fruit fly ID mapping
-  if( organism == "dmelanogaster") pkg <- "org.Dm.eg.db"
-  
-  ## check for the installed package to do the zebrafish ID mapping
-  if( organism == "drerio") pkg <- "org.Dr.eg.db"
-  
-  ## check for the installed package to do the chicken ID mapping
-  if( organism == "ggallus") pkg <- "org.Gg.eg.db"
-  
-  ## check for the installed package to do the frog ID mapping
-  if( organism == "xlaevis") pkg <- "org.Xl.eg.db"
-  
-  ## check for the installed package to do the dog ID mapping
-  if( organism == "cfamiliaris") pkg <- "org.Cf.eg.db"
-  
-  if( !requireNamespace( pkg, quietly = TRUE)){
-    stop( paste0("The necessary package ", pkg, " is not installed."),
-          call. = FALSE)
-  }
-  return( eval( parse(text=paste0(pkg, "::", pkg))))
-  
+    
+    # check for the installed package to do the human ID mapping
+    if( organism == "hsapiens") pkg <- "org.Hs.eg.db"
+    
+    ## check for the installed package to do the rat ID mapping
+    if( organism == "rnorvegicus") pkg <- "org.Rn.eg.db"
+    
+    ## check for the installed package to do the mouse ID mapping
+    if( organism == "mmusculus") pkg <- "org.Mm.eg.db"
+    
+    ## check for the installed package to do the pig ID mapping
+    if( organism == "sscrofa") pkg <- "org.Ss.eg.db"
+    
+    ## check for the installed package to do the bovine ID mapping
+    if( organism == "btaurus") pkg <- "org.Bt.eg.db"
+    
+    ## check for the installed package to do the _C.elegans_ ID mapping
+    if( organism == "celegans") pkg <- "org.Ce.eg.db"
+    
+    ## check for the installed package to do the fruit fly ID mapping
+    if( organism == "dmelanogaster") pkg <- "org.Dm.eg.db"
+    
+    ## check for the installed package to do the zebrafish ID mapping
+    if( organism == "drerio") pkg <- "org.Dr.eg.db"
+    
+    ## check for the installed package to do the chicken ID mapping
+    if( organism == "ggallus") pkg <- "org.Gg.eg.db"
+    
+    ## check for the installed package to do the frog ID mapping
+    if( organism == "xlaevis") pkg <- "org.Xl.eg.db"
+    
+    ## check for the installed package to do the dog ID mapping
+    if( organism == "cfamiliaris") pkg <- "org.Cf.eg.db"
+    
+    if( !requireNamespace( pkg, quietly = TRUE)){
+        stop( paste0("The necessary package ", pkg, " is not installed."),
+              call. = FALSE)
+    }
+    return( eval( parse(text=paste0(pkg, "::", pkg))))
+    
 }
 
 #' Mapping between pathway encoded metabolites and different metabolite ID
@@ -294,29 +297,32 @@ getIDMappingDatabase <- function( organism){
 #'
 #' @export
 getMetaboliteMapping <- function( features, keytype, returntype = "HMDB"){
-
-  ## check for the correct metabolite mapping format
-  if( !str_detect( returntype,  regex( "^HMDB$|^ChEBI|^KEGG$|^CAS$|^DTXCID$|^DTXSID$|^CID$|^SID$") )){
-    stop( "Insert one of the following ID types to be returned (returntype): HMDB, CAS, ChEBI, KEGG, CID, SID, DTXCID, DTXSID", call. = FALSE)
-  }
-
-  ## run the actual mapping of IDS and return a list of the user-given type
-  map <- tryCatch({
-    m <- match( unique( features), metabolitesMapping[[ keytype]])
-    m <- m[ !is.na( m)]
-    metabolitesMapping[[returntype]][ m]
-  }, 
-  error=function( cond){
-    return(list())
-  })
-
-  map <- map[ !is.na( map)]
-
-  if( returntype == "DTXCID") map <- paste0( "DTXCID", map)
-  if( returntype == "DTXSID") map <- paste0( "DTXSID", map)
-
-  return( map)
-
+    
+    ## check for the correct metabolite mapping format
+    match <- "^HMDB$|^ChEBI|^KEGG$|^CAS$|^DTXCID$|^DTXSID$|^CID$|^SID$"
+    if( !str_detect( returntype, regex( match) )){
+        stop( "Insert one of the following IDs to be returned (returntype):
+              HMDB, CAS, ChEBI, KEGG, CID, SID, DTXCID, DTXSID", 
+              call. = FALSE)
+    }
+    
+    ## run the actual mapping of IDS and return a list of the user-given type
+    map <- tryCatch({
+        m <- match( unique( features), metabolitesMapping[[ keytype]])
+        m <- m[ !is.na( m)]
+        metabolitesMapping[[returntype]][ m]
+    }, 
+    error=function( cond){
+        return(list())
+    })
+    
+    map <- map[ !is.na( map)]
+    
+    if( returntype == "DTXCID") map <- paste0( "DTXCID", map)
+    if( returntype == "DTXSID") map <- paste0( "DTXSID", map)
+    
+    return( map)
+    
 }
 
 
@@ -371,162 +377,177 @@ getMetaboliteMapping <- function( features, keytype, returntype = "HMDB"){
 #' @importFrom rlang .data
 #'
 #' @export
-getMultiOmicsFeatures <- function( dbs = c("all"), layer = c("all"), returnTranscriptome = "SYMBOL", returnProteome = "SYMBOL", returnMetabolome = "HMDB", organism = "hsapiens", useLocal = TRUE){
-
-  layers = c( "all", "metabolome", "proteome", "transcriptome")
-  organism <- tolower( organism)
-
-  returnTranscriptome <- toupper( returnTranscriptome)
-  returnProteome <- toupper( returnProteome)
-  returnMetabolome <- toupper( returnMetabolome)
-
-  ## check for the correct transcriptome mapping format
-  if( !str_detect( returnTranscriptome,  regex( "^SYMBOL$|^ENTREZID$|^UNIPROT$|^ENSEMBL$|^REFSEQ$") )){
-    stop( "Insert one of the following ID types to be returned (returnTranscriptome): SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ",
-          call. = FALSE)
-  }
-
-  ## check for the correct proteome mapping format
-  if( !str_detect( returnTranscriptome,  regex( "^SYMBOL$|^ENTREZID$|^UNIPROT$|^ENSEMBL$|^REFSEQ$") )){
-    stop( "Insert one of the following ID types to be returned (returnProteome): SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ",
-          call. = FALSE)
-  }
-
-  ## check for the correct metabolite mapping format
-  if( !str_detect( returnMetabolome,  regex( "^HMDB$|^ChEBI|^KEGG$|^CAS$|^DTXCID$|^DTXSID$|^CID$|^SID$") )){
-    stop( "Insert one of the following ID types to be returned (returnMetabolome): HMDB, CAS, ChEBI, KEGG, CID, SID, DTXCID, DTXSID",
-          call. = FALSE)
-  }
-
-  ## check if the given organism is supported
-  if( !( organism %in% getOrganisms())){
-    stop( "You entered an organism that is not supported! Use getOrganisms() to get a list of all suported organisms.", 
-          call. = FALSE)
-  }
-
-  if( sum( tolower(layer) %in% layers) != length( layer)){
-    stop( "You entered wrong input for the omics layer specification, options are: all, transcriptome, proteome, metabolome, or a combination thereof.",
-          call. = FALSE)
-  }
-
-  pDBs <- pathwayDatabases()
-  databases <- c( "all", as.vector( pDBs %>% filter( .data$species == organism) %>% pull( .data$database)))
-
-  if( sum( tolower(dbs) %in% databases) != length( dbs)){
-    stop( "You entered wrong input for the omics layer specification, options are: all, kegg, pathbank, reactome, biocarta, nci, panther, smpdb, pharmgkb, or a combination thereof.",
-          call. = FALSE)
-  }
-
-  if( "all" %in% dbs){
-    dbs <- as.vector( pDBs %>% filter( .data$species == organism) %>% pull( .data$database))
-  }
-
-  if( "all" %in% layer){
-    layer <- c( "transcriptome", "proteome", "metabolome")
-  }
-
-  pathways <- sapply( dbs, function(x) { pathways( organism, x)})
-
-  features <- list()
-  if( "transcriptome" %in% layer){
-
-    trans <- unlist( lapply( names(pathways), function(dbname){
-
-      ap <- archivePath( paste0( organism, "_", dbname, "_", returnTranscriptome))
-
-      if( file.exists( ap) && useLocal){
-
-        loadLocal( ap)
-
-      } else{
-
-        tmp <- sapply( pathways[[dbname]], function(p){ 
-          getFeatures( pathway = p, org = organism, 
-                       which = "proteins", 
-                       returntype = returnTranscriptome)
-        })
-
-        names( tmp) <- paste0( rep( paste0( "(", toupper(dbname), ") "), length( pathways[[dbname]])), names( tmp))
-        saveRDS( tmp, file = ap)
-        tmp
-
-      }
-
-    }), recursive = FALSE)
-
-    features$transcriptome <- trans
-
-  }  
-
-  if( "proteome" %in% layer){
-
-    if( returnProteome == returnTranscriptome){
-      features$proteome <- trans
-    } else{
-
-      prot <- unlist( lapply( names(pathways), function(dbname){
-
-        ap <- archivePath( paste0( organism, "_", dbname, "_", returnProteome))
-
-        if( file.exists( ap) && useLocal){
-
-          loadLocal( ap)
-
-        } else{
-
-          tmp <- sapply( pathways[[dbname]], function(p){
-            getFeatures( pathway = p, org = organism, 
-                         which = "proteins",
-                         returntype = returnProteome)
-          })
-
-          names( tmp) <- paste0( rep( paste0( "(", toupper(dbname), ") "), length( pathways[[dbname]])), names( tmp))
-          saveRDS( tmp, file = ap)
-          tmp
-
-        }
-
-      }), recursive = FALSE)
-
-      features$proteome <- prot
-
+getMultiOmicsFeatures <- function( dbs = c("all"), layer = c("all"), 
+                                   returnTranscriptome = "SYMBOL", 
+                                   returnProteome = "SYMBOL", 
+                                   returnMetabolome = "HMDB", 
+                                   organism = "hsapiens", 
+                                   useLocal = TRUE){
+    
+    layers = c( "all", "metabolome", "proteome", "transcriptome")
+    organism <- tolower( organism)
+    
+    returnTranscriptome <- toupper( returnTranscriptome)
+    returnProteome <- toupper( returnProteome)
+    returnMetabolome <- toupper( returnMetabolome)
+    
+    match <- "^SYMBOL$|^ENTREZID$|^UNIPROT$|^ENSEMBL$|^REFSEQ$"
+    ## check for the correct transcriptome mapping format
+    if( !str_detect( returnTranscriptome,  regex( match) )){
+        stop( "Insert one of the following IDs to be returned (returnTranscriptome):
+              SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ",
+              call. = FALSE)
     }
-
-  }
-
-
-  if( "metabolome" %in% layer){
-
-    meta <- unlist( lapply( names(pathways), function(dbname){
-
-      ap <- archivePath( paste0( organism, "_", dbname, "_", returnMetabolome))
-
-      if( file.exists( ap) && useLocal){
-
-        loadLocal( ap)
-
-      } else{
-
-        tmp <- sapply( pathways[[dbname]], function(p){
-          getFeatures( pathway = p, org = organism, 
-                       which = "metabolites",
-                       returntype = returnMetabolome)
-        })
-
-        names( tmp) <- paste0( rep( paste0( "(", toupper(dbname), ") "), length( pathways[[dbname]])), names( tmp))
-        saveRDS( tmp, file = ap)
-        tmp
-
-      }
-
-    }), recursive = FALSE)
-
-    features$metabolome <- meta
-
-  }
-
-  return( features)
-
+    
+    ## check for the correct proteome mapping format
+    if( !str_detect( returnTranscriptome,  regex( match) )){
+        stop( "Insert one of the following IDs to be returned (returnProteome):
+              SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ",
+              call. = FALSE)
+    }
+    
+    match <- "^HMDB$|^ChEBI|^KEGG$|^CAS$|^DTXCID$|^DTXSID$|^CID$|^SID$"
+    ## check for the correct metabolite mapping format
+    if( !str_detect( returnMetabolome,  regex( match) )){
+        stop( "Insert one of the following IDs to be returned (returnMetabolome):
+              HMDB, CAS, ChEBI, KEGG, CID, SID, DTXCID, DTXSID",
+              call. = FALSE)
+    }
+    
+    ## check if the given organism is supported
+    if( !( organism %in% getOrganisms())){
+        stop( "You entered an organism that is not supported! 
+              Use getOrganisms() to get a list of all suported organisms.", 
+              call. = FALSE)
+    }
+    
+    if( sum( tolower(layer) %in% layers) != length( layer)){
+        stop( "You entered wrong input for the omics layer specification.
+              Options are: all, transcriptome, proteome, metabolome, or a combination thereof.",
+              call. = FALSE)
+    }
+    
+    pDBs <- pathwayDatabases()
+    databases <- c( "all", as.vector( pDBs %>% filter( .data$species == organism) %>% pull( .data$database)))
+    
+    if( sum( tolower(dbs) %in% databases) != length( dbs)){
+        stop( "You entered wrong input for the omics layer specification.
+              Options are: all, kegg, pathbank, reactome, biocarta, nci, panther, 
+              smpdb, pharmgkb, or a combination thereof.",
+              call. = FALSE)
+    }
+    
+    if( "all" %in% dbs){
+        dbs <- as.vector( pDBs %>% filter( .data$species == organism) %>% pull( .data$database))
+    }
+    
+    if( "all" %in% layer){
+        layer <- c( "transcriptome", "proteome", "metabolome")
+    }
+    
+    pathways <- lapply( dbs, function(x) { pathways( organism, x)})
+    names( pathways) <- dbs
+    
+    features <- list()
+    if( "transcriptome" %in% layer){
+        
+        trans <- unlist( lapply( names(pathways), function(dbname){
+            
+            ap <- archivePath( paste0( organism, "_", dbname, "_", returnTranscriptome))
+            
+            if( file.exists( ap) && useLocal){
+                
+                loadLocal( ap)
+                
+            } else{
+                
+                tmp <- lapply( pathways[[dbname]], function(p){ 
+                    getFeatures( pathway = p, org = organism, 
+                                 which = "proteins", 
+                                 returntype = returnTranscriptome)
+                })
+                
+                names( tmp) <- paste0( rep( paste0( "(", toupper(dbname), ") "), length( pathways[[dbname]])), names( tmp))
+                saveRDS( tmp, file = ap)
+                tmp
+                
+            }
+            
+        }), recursive = FALSE)
+        
+        features$transcriptome <- trans
+        
+    }  
+    
+    if( "proteome" %in% layer){
+        
+        if( returnProteome == returnTranscriptome){
+            features$proteome <- trans
+        } else{
+            
+            prot <- unlist( lapply( names(pathways), function(dbname){
+                
+                ap <- archivePath( paste0( organism, "_", dbname, "_", returnProteome))
+                
+                if( file.exists( ap) && useLocal){
+                    
+                    loadLocal( ap)
+                    
+                } else{
+                    
+                    tmp <- lapply( pathways[[dbname]], function(p){
+                        getFeatures( pathway = p, org = organism, 
+                                     which = "proteins",
+                                     returntype = returnProteome)
+                    })
+                    
+                    names( tmp) <- paste0( rep( paste0( "(", toupper(dbname), ") "), length( pathways[[dbname]])), names( tmp))
+                    saveRDS( tmp, file = ap)
+                    tmp
+                    
+                }
+                
+            }), recursive = FALSE)
+            
+            features$proteome <- prot
+            
+        }
+        
+    }
+    
+    
+    if( "metabolome" %in% layer){
+        
+        meta <- unlist( lapply( names(pathways), function(dbname){
+            
+            ap <- archivePath( paste0( organism, "_", dbname, "_", returnMetabolome))
+            
+            if( file.exists( ap) && useLocal){
+                
+                loadLocal( ap)
+                
+            } else{
+                
+                tmp <- lapply( pathways[[dbname]], function(p){
+                    getFeatures( pathway = p, org = organism, 
+                                 which = "metabolites",
+                                 returntype = returnMetabolome)
+                })
+                
+                names( tmp) <- paste0( rep( paste0( "(", toupper(dbname), ") "), length( pathways[[dbname]])), names( tmp))
+                saveRDS( tmp, file = ap)
+                tmp
+                
+            }
+            
+        }), recursive = FALSE)
+        
+        features$metabolome <- meta
+        
+    }
+    
+    return( features)
+    
 }
 
 
@@ -570,19 +591,18 @@ getMultiOmicsFeatures <- function( dbs = c("all"), layer = c("all"), returnTrans
 #' @importFrom fgsea fgsea
 #'
 #' @export
-multiGSEA <- function( pathways, ranks){
-
-  # Go through all omics layer.
-  es <- lapply( names( pathways), function( omics){
-
-    fgsea( pathways[[ omics]], ranks[[ omics]], nperm = 1000, minSize = 5)
-
-  })
-
-  names( es) <- names( pathways)
-
-  return( es)
-
+multiGSEA <- function(pathways, ranks) {
+    
+    # Go through all omics layer.
+    es <- lapply(names(pathways), function(omics) {
+        fgsea(pathways[[omics]], ranks[[omics]], nperm = 1000, minSize = 5)
+        
+    })
+    
+    names(es) <- names(pathways)
+    
+    return(es)
+    
 }
 
 
@@ -606,7 +626,7 @@ multiGSEA <- function( pathways, ranks){
 #' # Download pathway definition and extract features
 #' pathways <- getMultiOmicsFeatures( dbs = c( "kegg"), layer = c("transcriptome", "proteome"))
 #'
-#' # load omics data and calculate ranks
+#' # loamultiple of 4d omics data and calculate ranks
 #' data(transcriptome)
 #' data(proteome)
 #' ranks <- initOmicsDataStructure( c("transcriptome", "proteome"))
@@ -623,27 +643,27 @@ multiGSEA <- function( pathways, ranks){
 #'
 #' @export
 extractPvalues <- function( enrichmentScores, pathwayNames){
-
-  # Go through all the pathways
-  res <- lapply( pathwayNames, function( name){ 
-
-    # Go through all the possible omics layer
-    unlist(lapply( names( enrichmentScores), function( y){
-
-      df <- enrichmentScores[[y]][which( enrichmentScores[[y]]$pathway== name),c(2,3)]
-      if( nrow( df) == 0){ df <- data.frame( pval = NA, padj = NA)}
-      names(df) <- paste0( y, "_", names(df))
-      df
-
-    }))
-
-  })
-
-  # Combine the list elements to a data frame and assign the pathway names as rownames
-  res <- data.frame( do.call( rbind, res))
-
-  return( res)
-
+    
+    # Go through all the pathways
+    res <- lapply( pathwayNames, function( name){ 
+        
+        # Go through all the possible omics layer
+        unlist(lapply( names( enrichmentScores), function( y){
+            
+            df <- enrichmentScores[[y]][which( enrichmentScores[[y]]$pathway== name),c(2,3)]
+            if( nrow( df) == 0){ df <- data.frame( pval = NA, padj = NA)}
+            names(df) <- paste0( y, "_", names(df))
+            df
+            
+        }))
+        
+    })
+    
+    # Combine the list elements to a data frame and assign the pathway names as rownames
+    res <- data.frame( do.call( rbind, res))
+    
+    return( res)
+    
 }
 
 
@@ -666,21 +686,22 @@ extractPvalues <- function( enrichmentScores, pathwayNames){
 #'
 #' @export
 initOmicsDataStructure <- function( layer = c("transcriptome", "proteome", "metabolome")){
-
-  l <- c()
-  if( length( grep( "TRANS*", layer, ignore.case = TRUE)) > 0) l <- c( l, "transcriptome")
-  if( length( grep( "PROTE*", layer, ignore.case = TRUE)) > 0) l <- c( l, "proteome")
-  if( length( grep( "METABO*", layer, ignore.case = TRUE)) > 0) l <- c( l, "metabolome")
-
-  if( length( l) != length( layer)){
-    stop( "Not all your omics layer could be mapped to 'transcriptome', 'proteome', or 'metabolome'. ",
-          call. = TRUE)
-  }
-
-  empty_structure <- sapply( l, function(lname){ list()})
-
-  return( empty_structure)
-
+    
+    l <- c()
+    if( length( grep( "TRANS*", layer, ignore.case = TRUE)) > 0) l <- c( l, "transcriptome")
+    if( length( grep( "PROTE*", layer, ignore.case = TRUE)) > 0) l <- c( l, "proteome")
+    if( length( grep( "METABO*", layer, ignore.case = TRUE)) > 0) l <- c( l, "metabolome")
+    
+    if( length( l) != length( layer)){
+        stop( "Not all your omics layer could be mapped to 'transcriptome', 'proteome', or 'metabolome'. ",
+              call. = TRUE)
+    }
+    
+    empty_structure <- rep( list( list()), length( l))
+    names( empty_structure) <- l
+    
+    return( empty_structure)
+    
 }
 
 
@@ -723,55 +744,56 @@ initOmicsDataStructure <- function( layer = c("transcriptome", "proteome", "meta
 #'
 #' @export
 combinePvalues <- function( df, method = "stouffer", weights = NULL){
-
-  method <- tolower( method)
-  if( method != "stouffer" & method != "fisher" & method != "edgington"){
-    stop( "You can chose between the 'stouffer', 'edgington', and 'fisher' method to combine p-values.",
-          call. = FALSE)
-  }
-
-  cols <- grep( "pval", colnames( df))
-
-  pvals <- apply( df, 1, function( row){
-
-    row <- row[ cols]
-    row <- row[ !is.na( row)]
-
-    if( length( row) >= 2) {
-      if( method == "fisher"){
-        p <- sumlog( row)
-        p$p
-      }else if( method == "edgington"){
-        p <- sump( row)
-        p$p
-      }else {
-
-        ## sumz allows only p-values smaller than 1
-        row <- row[ row > 0 & row < 1]
-
-        if( length( row) >= 2){
-          if( length( weights) > 0){
-            p <- sumz( row, weights = weights)
-          }else{
-            p <- sumz( row)
-          }
-          p$p
-        }else if( length( row == 1)){
-          row[1]
-        }else{
-          NA
-        }
-
-      }
-    } else if( length( row) == 1){
-      row[1]
-    } else{
-      NA
+    
+    method <- tolower( method)
+    if( method != "stouffer" & method != "fisher" & method != "edgington"){
+        stop( "You can chose between the 'stouffer', 'edgington', 
+              and 'fisher' method to combine p-values.",
+              call. = FALSE)
     }
-  })
-
-  return( pvals)
-
+    
+    cols <- grep( "pval", colnames( df))
+    
+    pvals <- apply( df, 1, function( row){
+        
+        row <- row[ cols]
+        row <- row[ !is.na( row)]
+        
+        if( length( row) >= 2) {
+            if( method == "fisher"){
+                p <- sumlog( row)
+                p$p
+            }else if( method == "edgington"){
+                p <- sump( row)
+                p$p
+            }else {
+                
+                ## sumz allows only p-values smaller than 1
+                row <- row[ row > 0 & row < 1]
+                
+                if( length( row) >= 2){
+                    if( length( weights) > 0){
+                        p <- sumz( row, weights = weights)
+                    }else{
+                        p <- sumz( row)
+                    }
+                    p$p
+                }else if( length( row == 1)){
+                    row[1]
+                }else{
+                    NA
+                }
+                
+            }
+        } else if( length( row) == 1){
+            row[1]
+        } else{
+            NA
+        }
+    })
+    
+    return( pvals)
+    
 }
 
 
@@ -795,9 +817,9 @@ combinePvalues <- function( df, method = "stouffer", weights = NULL){
 #'
 #' @export
 rankFeatures <- function( logFC, pvalues, base = 10){
-
-  return( sign(logFC) * -log( pvalues, base = base))
-
+    
+    return( sign(logFC) * -log( pvalues, base = base))
+    
 }
 
 
@@ -811,10 +833,10 @@ rankFeatures <- function( logFC, pvalues, base = 10){
 #'
 #' @return String containing the path to the file.
 archivePath <- function( filename){
-
-  ad <- archiveDir()
-  return( paste0( ad, "/", filename, ".rds"))
-
+    
+    ad <- archiveDir()
+    return( paste0( ad, "/", filename, ".rds"))
+    
 }
 
 
@@ -830,17 +852,17 @@ archivePath <- function( filename){
 #'
 #' @importFrom rappdirs user_cache_dir
 archiveDir <- function(){
-
-  ad <- user_cache_dir( "multiGSEA")
-
-  if ( !file.exists( ad)) {
-    if ( !dir.create( ad, FALSE, TRUE)) 
-      stop( "An error occured during creating the archive directory: ", ad, 
-            call. = FALSE)
-  }
-
-  return(ad)
-
+    
+    ad <- user_cache_dir( "multiGSEA")
+    
+    if ( !file.exists( ad)) {
+        if ( !dir.create( ad, FALSE, TRUE)) 
+            stop( "An error occured during creating the archive directory: ", ad, 
+                  call. = FALSE)
+    }
+    
+    return(ad)
+    
 }
 
 
@@ -859,15 +881,15 @@ archiveDir <- function(){
 #' @importFrom methods is
 #' @importFrom magrittr %>%
 loadLocal <- function( filename){
-
-  res <- try( readRDS( filename), silent = TRUE)
-
-  if( "try-error" %in% is(res)){
-    return( NULL)
-  } else{
-    return( res)
-  }
-
+    
+    res <- try( readRDS( filename), silent = TRUE)
+    
+    if( "try-error" %in% is(res)){
+        return( NULL)
+    } else{
+        return( res)
+    }
+    
 }
 
 
