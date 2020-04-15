@@ -66,6 +66,11 @@ getFeatures <- function( pathway, which = "proteins", org = "hsapiens", returnty
             mapped <- getGeneMapping( features = mapped, keytype = "UNIPROT",
                                       org = org, returntype = returntype) 
         }
+        if( startsWith( features[1], "FLYBASECG")){ 
+            mapped <- gsub( "FLYBASECG:", "", features)
+            mapped <- getGeneMapping( features = mapped, keytype = "FLYBASECG",
+                                      org = org, returntype = returntype)
+        }
     }
     
     ## its special for metabolites, because sometimes there are different
@@ -80,9 +85,12 @@ getFeatures <- function( pathway, which = "proteins", org = "hsapiens", returnty
 
         pubchem <- mapIDType( features = features, keytype = "PUBCHEM",
                               maptype = "CID", returntype = returntype)
+        
+        mapped <- c( chebi, kegg, pubchem)
+        
     }
     
-    return( c( chebi, kegg, pubchem))
+    return( mapped)
     
 }
 
@@ -162,8 +170,12 @@ getGeneMapping <- function( features, keytype, org = "hsapiens", returntype = "S
     
     db <- getIDMappingDatabase( org)
     
-    if( !str_detect( returntype, regex( "^SYMBOL$|^ENTREZID$|^UNIPROT$|^ENSEMBL$|^REFSEQ$"))){
-        stop( "Insert one of the following ID types to be returned (returntype): SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ", call. = FALSE)
+    if( org != "dmelanogaster" & !str_detect( returntype, regex( "^SYMBOL$|^ENTREZID$|^UNIPROT$|^ENSEMBL$|^REFSEQ$"))){
+        stop( "Insert one of the following IDs to be returned (returntype): SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ", call. = FALSE)
+    }
+
+    if( org == "dmelanogaster" & !str_detect( returntype, regex( "^SYMBOL$|^ENTREZID$|^UNIPROT$|^ENSEMBL$|^REFSEQ$|^FLYBASE$|^FLYBASECG$"))){
+        stop( "Insert one of the following IDs to be returned (returntype): SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ, FLYBASE, FLYBASECG", call. = FALSE)
     }
     
     ## design the columns field such that we create a triple ID mapping between
@@ -481,7 +493,7 @@ getMultiOmicsFeatures <- function( dbs = c("all"), layer = c("all"),
     
     if( "proteome" %in% layer){
         
-        if( returnProteome == returnTranscriptome){
+        if( "transcriptome" %in% layer & returnProteome == returnTranscriptome){
             features$proteome <- trans
         } else{
             

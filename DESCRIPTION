@@ -42,4 +42,5 @@ Suggests:
     org.Cf.eg.db,
     knitr,
     rmarkdown,
-    BiocStyle
+    BiocStyle,
+    testthat (>= 2.1.0)
