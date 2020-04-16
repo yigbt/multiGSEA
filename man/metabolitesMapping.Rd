@@ -4,7 +4,7 @@
 \name{metabolitesMapping}
 \alias{metabolitesMapping}
 \title{Mapping table for metabolites, derived and compiled from four different data sources.}
-\format{A tibble with 7 variables and more then 1 Million metabolites:
+\format{A tibble with 7 variables and nearly 900.000 metabolites:
 \describe{
    \item{DTXCID}{DSSTox structure identifier, character}
    \item{DTXSID}{DSSTox substance identifier, character}
