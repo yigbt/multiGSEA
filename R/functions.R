@@ -638,7 +638,7 @@ multiGSEA <- function(pathways, ranks) {
 #' # Download pathway definition and extract features
 #' pathways <- getMultiOmicsFeatures( dbs = c( "kegg"), layer = c("transcriptome", "proteome"))
 #'
-#' # loamultiple of 4d omics data and calculate ranks
+#' # load omics data and calculate ranks
 #' data(transcriptome)
 #' data(proteome)
 #' ranks <- initOmicsDataStructure( c("transcriptome", "proteome"))
