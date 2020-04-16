@@ -330,8 +330,9 @@ getMetaboliteMapping <- function( features, keytype, returntype = "HMDB"){
     
     map <- map[ !is.na( map)]
     
-    if( returntype == "DTXCID") map <- paste0( "DTXCID", map)
-    if( returntype == "DTXSID") map <- paste0( "DTXSID", map)
+    if( returntype == "DTXCID" & length( map) > 0) map <- paste0( "DTXCID", map)
+    if( returntype == "DTXSID" & length( map) > 0) map <- paste0( "DTXSID", map)
+    if( returntype == "HMDB" & length( map) > 0) map <- paste0( "HMDB0", map)
     
     return( map)
     
