@@ -25,6 +25,7 @@ Imports:
 VignetteBuilder: knitr
 biocViews: GeneSetEnrichment, Pathways, Reactome, BioCarta
 URL: https://github.com/yigbt/multiGSEA
+BugReports: https://github.com/yigbt/multiGSEA/issues
 Encoding: UTF-8
 NeedsCompilation: no
 RoxygenNote: 7.0.2
