@@ -21,10 +21,6 @@ test_that( "Fisher method works", {
     expect_is( combinePvalues( df, method = method), "numeric")
     expect_equal( length( combinePvalues( df, method = method)), nrow( df))
     
-    df <- 0 - cbind( runif(5), runif(5), runif(5))
-    colnames( df) <- c("trans.pval", "prot.pval", "meta.pval")
-    expect_error( combinePvalues( df, method = method))
-    
 })
 
 
@@ -37,10 +33,6 @@ test_that( "Edgington method works", {
     expect_is( combinePvalues( df, method = method), "numeric")
     expect_equal( length( combinePvalues( df, method = method)), nrow( df))
     
-    df <- 0 - cbind( runif(5), runif(5), runif(5))
-    colnames( df) <- c("trans.pval", "prot.pval", "meta.pval")
-    expect_error( combinePvalues( df, method = method))
-    
 })
 
 
@@ -52,10 +44,6 @@ test_that( "Stouffer method works", {
     method <- "Stouffer"
     expect_is( combinePvalues( df, method = method), "numeric")
     expect_equal( length( combinePvalues( df, method = method)), nrow( df))
-    
-    df <- 0 - cbind( runif(5), runif(5), runif(5))
-    colnames( df) <- c("trans.pval", "prot.pval", "meta.pval")
-    expect_equivalent( combinePvalues(df), rep(NA, nrow( df)))
 
 })
 
