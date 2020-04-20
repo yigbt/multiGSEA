@@ -1,7 +1,7 @@
 Package: multiGSEA
 Type: Package
 Title: Combining GSEA-based pathway enrichment with multi omics data integration
-Version: 0.99.3
+Version: 0.99.4
 Date: 2020-03-05
 Authors@R: c(
     person( "Sebastian", "Canzler", email = "sebastian.canzler@ufz.de", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7935-9582")),
@@ -10,7 +10,7 @@ Description: Extracted features from patways derived from 8 different databases
   (KEGG, Reactome, Biocarta, etc.) can be used on transcriptomic, proteomic, and/or
   metabolomic level to calculate a combined GSEA-based enrichment score.
 License: AGPL-3
-Depends: R (>= 3.6)
+Depends: R (>= 4.0)
 Imports: 
     magrittr,
     graphite,
