@@ -1,5 +1,5 @@
 context( "Pathways and feature extraction")
-data( "metabolitesMapping")
+data( metabolitesMapping)
 
 test_that( "transcriptomic features get mapped", {
     
