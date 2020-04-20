@@ -118,8 +118,7 @@ respectively.
 ```{r load_libraries, results='hide', warning=FALSE, message=FALSE}
 Bioc_packages <- c( "AnnotationDbi", "org.Hs.eg.db", "graphite", "fgsea")
 
-R_packages <- c("knitr", "RColorBrewer", "tidyverse",
-                "Rcpp", "metap")
+R_packages <- c("knitr", "dplyr", "Rcpp", "metap")
 
 libs <- c( Bioc_packages, R_packages)
 
@@ -315,7 +314,7 @@ For displaying reasons, only the adjusted p-values are shown in Table
 
 ```{r resultTable, results='asis', echo=FALSE}
 caption <- "Table summarizing the top 15 pathways. Pathways from KEGG, Reactome, and BioCarta are listed based on their aggregated adjusted p-value. Corrected p-values are displayed for each omics layer separately and aggregated by means of the Stouffer's Z-method."
-kable( df %>% arrange( combined_padj) %>% dplyr::select( c( transcriptome_padj, proteome_padj, metabolome_padj, combined_padj))
+kable( df %>% dplyr::arrange( combined_padj) %>% dplyr::select( c( transcriptome_padj, proteome_padj, metabolome_padj, combined_padj))
        %>% dplyr::slice( 1:15), caption = caption)
 ```
 
