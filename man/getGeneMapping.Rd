@@ -11,8 +11,8 @@ getGeneMapping(features, keytype, org = "hsapiens", returntype = "SYMBOL")
 
 \item{keytype}{String specifying the ID type, e.g., "ENTREZID" or "UNIPROT".}
 
-\item{org}{String that defines the organism. Default: hsapiens Options: hsapiens,
-rnorvegicus, mmusculus}
+\item{org}{String that defines the organism. Default: hsapiens
+Options: see \code{\link[multiGSEA]{getOrganisms}}}
 
 \item{returntype}{String that specifies the returning ID type. Default:
 SYMBOL, Options: SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ}
@@ -35,6 +35,7 @@ getGeneMapping( features, keytype)
 
 getGeneMapping( features, keytype, returntype = "UNIPROT")
 
+\donttest{
 features <- graphite::nodes( graphite::pathways( "rnorvegicus", "reactome")[[1]])
 features <- gsub( "UNIPROT:", "", features)
 getGeneMapping( features, keytype = "UNIPROT", org = "rnorvegicus")
@@ -42,5 +43,6 @@ getGeneMapping( features, keytype = "UNIPROT", org = "rnorvegicus")
 getGeneMapping( features, keytype = "UNIPROT",
                 org = "rnorvegicus",
                 returntype = "ENSEMBL")
+}
 
 }

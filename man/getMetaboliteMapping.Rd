@@ -29,6 +29,7 @@ Dashboard}, \href{https://pubchem.ncbi.nlm.nih.gov/}{PubChem},
 is provided with the package.
 }
 \examples{
+data( metabolitesMapping)
 features <- graphite::nodes( graphite::pathways( "hsapiens", "kegg")[[1]], which = "metabolites")
 features <- gsub( "KEGGCOMP:", "", features)
 keytype <- "KEGG"

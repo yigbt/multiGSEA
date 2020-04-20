@@ -31,8 +31,8 @@ Default: SYMBOL Options: SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ}
 Default: HMDB Options: HMDB, CAS, DTXCID, DTXSID, CID, SID, ChEBI, KEGG}
 
 \item{organism}{String specifying the organism of interest. This has direct
-influence on the available pathway databases. Default: "hsapiens" Options:
-"hsapiens", "mmusculus", "rnorvegicus"}
+influence on the available pathway databases. Default: "hsapiens" 
+Options: see \code{\link[multiGSEA]{getOrganisms}}}
 
 \item{useLocal}{Boolean to use local pathway/feature descriptions. In case
 useLocal is set to FALSE, pathway definitions and feature extraction
@@ -54,6 +54,11 @@ enrichment.
 }
 \examples{
 
+getMultiOmicsFeatures( dbs = c( "kegg"),
+                       layer = c( "transcriptome", "proteome"),
+                       organism = "hsapiens")
+                       
+\donttest{
 getMultiOmicsFeatures( dbs = c( "kegg", "reactome"),
                        layer = c( "transcriptome", "metabolome"),
                        organism = "mmusculus")
@@ -62,5 +67,5 @@ getMultiOmicsFeatures( dbs = c("reactome"),
                        layer = c( "proteome"),
                        organism = "rnorvegicus",
                        returnProteome = "ENTREZID")
-
+}
 }

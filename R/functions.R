@@ -19,13 +19,12 @@
 #'   (metabolites)
 #'
 #' @examples
-#' pathways <- graphite::pathways( "hsapiens", "reactome")[[1]]
+#' pathways <- graphite::pathways( "hsapiens", "kegg")[[1]]
 #' getFeatures( pathways)
-#'
+#' \donttest{
 #' pathways <- graphite::pathways( "mmusculus", "kegg")[[1]]
 #' getFeatures( pathways, which = "metabolites", org = "mmusculus", returntype = "HMDB")
 #'
-#' \donttest{
 #' pathways <- graphite::pathways( "mmusculus", "kegg")
 #' getFeatures( pathways, which = "proteins", org = "mmusculus", returntype = "SYMBOL")
 #' }
@@ -131,8 +130,8 @@ mapIDType <- function( features, keytype = "CHEBI", maptype = "ChEBI", returntyp
 #'
 #' @param features List of identifiers to be mapped.
 #' @param keytype String specifying the ID type, e.g., "ENTREZID" or "UNIPROT".
-#' @param org String that defines the organism. Default: hsapiens Options: hsapiens,
-#'   rnorvegicus, mmusculus
+#' @param org String that defines the organism. Default: hsapiens
+#'   Options: see \code{\link[multiGSEA]{getOrganisms}}
 #' @param returntype String that specifies the returning ID type. Default:
 #'   SYMBOL, Options: SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ
 #'
@@ -146,6 +145,7 @@ mapIDType <- function( features, keytype = "CHEBI", maptype = "ChEBI", returntyp
 #'
 #' getGeneMapping( features, keytype, returntype = "UNIPROT")
 #'
+#' \donttest{
 #' features <- graphite::nodes( graphite::pathways( "rnorvegicus", "reactome")[[1]])
 #' features <- gsub( "UNIPROT:", "", features)
 #' getGeneMapping( features, keytype = "UNIPROT", org = "rnorvegicus")
@@ -153,7 +153,8 @@ mapIDType <- function( features, keytype = "CHEBI", maptype = "ChEBI", returntyp
 #' getGeneMapping( features, keytype = "UNIPROT",
 #'                 org = "rnorvegicus",
 #'                 returntype = "ENSEMBL")
-#'
+#' }
+#' 
 #' @importFrom stringr str_detect regex
 #' @importFrom AnnotationDbi select
 #'
@@ -297,6 +298,7 @@ getIDMappingDatabase <- function( organism){
 #' @return List containing mapped gene/protein IDs.
 #'
 #' @examples
+#' data( metabolitesMapping)
 #' features <- graphite::nodes( graphite::pathways( "hsapiens", "kegg")[[1]], which = "metabolites")
 #' features <- gsub( "KEGGCOMP:", "", features)
 #' keytype <- "KEGG"
@@ -361,8 +363,8 @@ getMetaboliteMapping <- function( features, keytype, returntype = "HMDB"){
 #' @param returnMetabolome String specifying the returned metabolite ID format.
 #'   Default: HMDB Options: HMDB, CAS, DTXCID, DTXSID, CID, SID, ChEBI, KEGG
 #' @param organism String specifying the organism of interest. This has direct
-#'   influence on the available pathway databases. Default: "hsapiens" Options:
-#'   "hsapiens", "mmusculus", "rnorvegicus"
+#'   influence on the available pathway databases. Default: "hsapiens" 
+#'   Options: see \code{\link[multiGSEA]{getOrganisms}}
 #' @param useLocal Boolean to use local pathway/feature descriptions. In case
 #'   useLocal is set to FALSE, pathway definitions and feature extraction
 #'   will be recalculated. This could take several minutes depending on the
@@ -374,6 +376,11 @@ getMetaboliteMapping <- function( features, keytype, returntype = "HMDB"){
 #'
 #' @examples
 #' 
+#' getMultiOmicsFeatures( dbs = c( "kegg"),
+#'                        layer = c( "transcriptome", "proteome"),
+#'                        organism = "hsapiens")
+#'                        
+#' \donttest{
 #' getMultiOmicsFeatures( dbs = c( "kegg", "reactome"),
 #'                        layer = c( "transcriptome", "metabolome"),
 #'                        organism = "mmusculus")
@@ -382,7 +389,7 @@ getMetaboliteMapping <- function( features, keytype, returntype = "HMDB"){
 #'                        layer = c( "proteome"),
 #'                        organism = "rnorvegicus",
 #'                        returnProteome = "ENTREZID")
-#'
+#' }
 #' @importFrom graphite pathwayDatabases pathways
 #' @importFrom magrittr %>%
 #' @importFrom stringr str_detect regex

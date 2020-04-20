@@ -1,9 +1,10 @@
 context( "Pathways and feature extraction")
+data( "metabolitesMapping")
 
 test_that( "transcriptomic features get mapped", {
     
     layer <- c( "transcriptome")
-    dbs <- c( "biocarta")
+    dbs <- c( "kegg")
     
     df <- getMultiOmicsFeatures( dbs = dbs, layer = layer)
     
@@ -11,14 +12,14 @@ test_that( "transcriptomic features get mapped", {
     expect_equal( length( df), 1)
     expect_identical( names( df), c("transcriptome"))
     
-    expect_match( names(df$transcriptome), "^\\(BIOCARTA\\)")
+    expect_match( names(df$transcriptome), "^\\(KEGG\\)")
     
 })
 
 test_that( "proteomic features get mapped", {
     
     layer <- c( "proteome")
-    dbs <- c( "reactome")
+    dbs <- c( "kegg")
     
     df <- getMultiOmicsFeatures( dbs = dbs, layer = layer)
     
@@ -26,7 +27,7 @@ test_that( "proteomic features get mapped", {
     expect_equal( length( df), 1)
     expect_identical( names( df), c("proteome"))
     
-    expect_match( names(df$proteome), "^\\(REACTOME\\)")
+    expect_match( names(df$proteome), "^\\(KEGG\\)")
     
 })
 
@@ -49,8 +50,8 @@ test_that( "metabolomic features get mapped", {
 
 test_that( "each layer has equal length", {
     
-    dbs <- c( "kegg", "reactome")
-    df <- getMultiOmicsFeatures( dbs = dbs, organism = "mmusculus")
+    dbs <- c( "kegg")
+    df <- getMultiOmicsFeatures( dbs = dbs, organism = "hsapiens")
     
     expect_equal( length( df), 3)
     expect_equal( length( df$transcriptome), length( df$proteome))
@@ -59,22 +60,4 @@ test_that( "each layer has equal length", {
 })
 
 
-test_that( "all organisms can be used", {
-    
-    dbs <- c( "kegg", "reactome")
-    organisms <- getOrganisms()
-    organisms <- organisms[ organisms != "xlaevis"]
-    lapply( organisms, function( org) {
-        df <- getMultiOmicsFeatures( dbs = dbs, organism = org)
-        expect_equal( length( df), 3)
-        expect_equal( length( df$transcriptome), length( df$proteome))
-        expect_equal( length( df$transcriptome), length( df$metabolome))
-    })
-    
-    df <- getMultiOmicsFeatures( dbs = c( "kegg"), organism = "xlaevis")
-    expect_equal( length( df), 3)
-    expect_equal( length( df$transcriptome), length( df$proteome))
-    expect_equal( length( df$transcriptome), length( df$metabolome))
-    
-})
 
