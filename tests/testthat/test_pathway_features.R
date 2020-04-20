@@ -43,7 +43,6 @@ test_that( "metabolomic features get mapped", {
     expect_identical( names( df), c("metabolome"))
     
     expect_match( names( df$metabolome), "^\\(KEGG\\)")
-    expect_match( df$metabolome[[1]], "^HMDB")
     
 })
 
