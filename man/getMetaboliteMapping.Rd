@@ -14,7 +14,7 @@ getMetaboliteMapping(features, keytype, returntype = "HMDB")
 
 \item{returntype}{String that specifies the returning ID type. 
 Default: HMDB
-Options: HMDB, CAS, DTXCID, DTXSID, CID, SID, ChEBI, KEGG}
+Options: HMDB, CAS, DTXCID, CID, SID, ChEBI, KEGG}
 }
 \value{
 List containing mapped gene/protein IDs.

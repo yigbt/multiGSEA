@@ -34,7 +34,7 @@
 #' @export
 getFeatures <- function( pathway, which = "proteins", org = "hsapiens", returntype = "SYMBOL"){
     
-    if( which != "proteins" & which != "metabolites"){
+    if( which != "proteins" && which != "metabolites"){
         stop( "Only 'proteins' and 'metabolites' are supported for 'which'.",
               call. = FALSE)
     }
@@ -155,7 +155,6 @@ mapIDType <- function( features, keytype = "CHEBI", maptype = "ChEBI", returntyp
 #'                 returntype = "ENSEMBL")
 #' }
 #' 
-#' @importFrom stringr str_detect regex
 #' @importFrom AnnotationDbi select
 #'
 #' @export
@@ -171,12 +170,18 @@ getGeneMapping <- function( features, keytype, org = "hsapiens", returntype = "S
     
     db <- getIDMappingDatabase( org)
     
-    if( org != "dmelanogaster" & !str_detect( returntype, regex( "^SYMBOL$|^ENTREZID$|^UNIPROT$|^ENSEMBL$|^REFSEQ$"))){
-        stop( "Insert one of the following IDs to be returned (returntype): SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ", call. = FALSE)
+    supportedIDs <- c( "SYMBOL", "ENTREZID", "UNIPROT", "ENSEMBL", "REFSEQ")
+    if( org != "dmelanogaster" && !returntype %in% supportedIDs){
+        stop( "Insert one of the following IDs to be returned (returntype): 
+              SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ.",
+              call. = FALSE)
     }
 
-    if( org == "dmelanogaster" & !str_detect( returntype, regex( "^SYMBOL$|^ENTREZID$|^UNIPROT$|^ENSEMBL$|^REFSEQ$|^FLYBASE$|^FLYBASECG$"))){
-        stop( "Insert one of the following IDs to be returned (returntype): SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ, FLYBASE, FLYBASECG", call. = FALSE)
+    supportedIDs <- c( supportedIDs, "FLYBASE", "FLYBASECG")
+    if( org == "dmelanogaster" && !returntype %in% supportedIDs){
+        stop( "Insert one of the following IDs to be returned (returntype): 
+              SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ, FLYBASE, FLYBASECG.",
+              call. = FALSE)
     }
     
     ## design the columns field such that we create a triple ID mapping between
@@ -236,45 +241,23 @@ getOrganisms <- function(){
 #' @return AnnotationDbi database for ID mapping.
 getIDMappingDatabase <- function( organism){
     
-    # check for the installed package to do the human ID mapping
-    if( organism == "hsapiens") pkg <- "org.Hs.eg.db"
+    map <- c( hsapiens = "org.Hs.eg.db", rnorvegicus = "org.Rn.eg.db",
+              mmusculus = "org.Mm.eg.db", sscrofa = "org.Ss.eg.db",
+              btaurus = "org.Bt.eg.db", celegans = "org.Ce.eg.db",
+              dmelanogaster = "org.Dm.eg.db", drerio = "org.Dr.eg.db",
+              ggallus = "org.Gg.eg.db", xlaevis = "org.Xl.eg.db",
+              cfamiliaris = "org.Cf.eg.db" )
     
-    ## check for the installed package to do the rat ID mapping
-    if( organism == "rnorvegicus") pkg <- "org.Rn.eg.db"
-    
-    ## check for the installed package to do the mouse ID mapping
-    if( organism == "mmusculus") pkg <- "org.Mm.eg.db"
-    
-    ## check for the installed package to do the pig ID mapping
-    if( organism == "sscrofa") pkg <- "org.Ss.eg.db"
-    
-    ## check for the installed package to do the bovine ID mapping
-    if( organism == "btaurus") pkg <- "org.Bt.eg.db"
-    
-    ## check for the installed package to do the _C.elegans_ ID mapping
-    if( organism == "celegans") pkg <- "org.Ce.eg.db"
-    
-    ## check for the installed package to do the fruit fly ID mapping
-    if( organism == "dmelanogaster") pkg <- "org.Dm.eg.db"
-    
-    ## check for the installed package to do the zebrafish ID mapping
-    if( organism == "drerio") pkg <- "org.Dr.eg.db"
-    
-    ## check for the installed package to do the chicken ID mapping
-    if( organism == "ggallus") pkg <- "org.Gg.eg.db"
-    
-    ## check for the installed package to do the frog ID mapping
-    if( organism == "xlaevis") pkg <- "org.Xl.eg.db"
-    
-    ## check for the installed package to do the dog ID mapping
-    if( organism == "cfamiliaris") pkg <- "org.Cf.eg.db"
+    stopifnot( organism %in% names(map))
+    pkg <- map[[organism]]
     
     if( !requireNamespace( pkg, quietly = TRUE)){
         stop( paste0("The necessary package ", pkg, " is not installed."),
               call. = FALSE)
     }
-    return( eval( parse(text=paste0(pkg, "::", pkg))))
     
+    return( get( pkg, envir = getNamespace( pkg)))
+
 }
 
 #' Mapping between pathway encoded metabolites and different metabolite ID
@@ -293,7 +276,7 @@ getIDMappingDatabase <- function( organism){
 #'
 #' @param returntype String that specifies the returning ID type. 
 #'        Default: HMDB
-#'        Options: HMDB, CAS, DTXCID, DTXSID, CID, SID, ChEBI, KEGG
+#'        Options: HMDB, CAS, DTXCID, CID, SID, ChEBI, KEGG
 #'
 #' @return List containing mapped gene/protein IDs.
 #'
@@ -307,14 +290,12 @@ getIDMappingDatabase <- function( organism){
 #'
 #' getMetaboliteMapping( features, keytype = "KEGG", returntype = "CID")
 #'
-#' @importFrom stringr str_detect regex
-#'
 #' @export
 getMetaboliteMapping <- function( features, keytype, returntype = "HMDB"){
     
     ## check for the correct metabolite mapping format
-    match <- "^HMDB$|^ChEBI|^KEGG$|^CAS$|^DTXCID$|^DTXSID$|^CID$|^SID$"
-    if( !str_detect( returntype, regex( match) )){
+    supportedIDs <- c( "HMDB", "ChEBI", "KEGG", "CAS", "DTXCID", "CID", "SID")
+    if( !returntype %in% supportedIDs){
         stop( "Insert one of the following IDs to be returned (returntype):
               HMDB, CAS, ChEBI, KEGG, CID, SID, DTXCID, DTXSID", 
               call. = FALSE)
@@ -332,9 +313,8 @@ getMetaboliteMapping <- function( features, keytype, returntype = "HMDB"){
     
     map <- map[ !is.na( map)]
     
-    if( returntype == "DTXCID" & length( map) > 0) map <- paste0( "DTXCID", map)
-    if( returntype == "DTXSID" & length( map) > 0) map <- paste0( "DTXSID", map)
-    if( returntype == "HMDB" & length( map) > 0) map <- paste0( "HMDB0", map)
+    if( returntype %in% c( "DTXCID", "HMDB") && length( map) > 0)
+        map <- paste0( returntype, map)
     
     return( map)
     
@@ -361,7 +341,7 @@ getMetaboliteMapping <- function( features, keytype, returntype = "HMDB"){
 #' @param returnProteome String specifying the returned protein ID format.
 #'   Default: SYMBOL Options: SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ
 #' @param returnMetabolome String specifying the returned metabolite ID format.
-#'   Default: HMDB Options: HMDB, CAS, DTXCID, DTXSID, CID, SID, ChEBI, KEGG
+#'   Default: HMDB Options: HMDB, CAS, DTXCID, CID, SID, ChEBI, KEGG
 #' @param organism String specifying the organism of interest. This has direct
 #'   influence on the available pathway databases. Default: "hsapiens" 
 #'   Options: see \code{\link[multiGSEA]{getOrganisms}}
@@ -392,7 +372,6 @@ getMetaboliteMapping <- function( features, keytype, returntype = "HMDB"){
 #' }
 #' @importFrom graphite pathwayDatabases pathways
 #' @importFrom magrittr %>%
-#' @importFrom stringr str_detect regex
 #' @importFrom dplyr filter pull
 #' @importFrom rlang .data
 #'
@@ -411,26 +390,26 @@ getMultiOmicsFeatures <- function( dbs = c("all"), layer = c("all"),
     returnProteome <- toupper( returnProteome)
     returnMetabolome <- toupper( returnMetabolome)
     
-    match <- "^SYMBOL$|^ENTREZID$|^UNIPROT$|^ENSEMBL$|^REFSEQ$"
     ## check for the correct transcriptome mapping format
-    if( !str_detect( returnTranscriptome,  regex( match) )){
+    supportedIDs <- c( "SYMBOL", "ENTREZID", "UNIPROT", "ENSEMBL", "REFSEQ")
+    if( !returnTranscriptome %in% supportedIDs){
         stop( "Insert one of the following IDs to be returned (returnTranscriptome):
               SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ",
               call. = FALSE)
     }
     
     ## check for the correct proteome mapping format
-    if( !str_detect( returnTranscriptome,  regex( match) )){
+    if( !returnProteome %in% supportedIDs){
         stop( "Insert one of the following IDs to be returned (returnProteome):
               SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ",
               call. = FALSE)
     }
     
-    match <- "^HMDB$|^ChEBI|^KEGG$|^CAS$|^DTXCID$|^DTXSID$|^CID$|^SID$"
     ## check for the correct metabolite mapping format
-    if( !str_detect( returnMetabolome,  regex( match) )){
+    supportedIDs <- c( "HMDB", "ChEBI", "KEGG", "CAS", "DTXCID", "CID", "SID")
+    if( !returnMetabolome %in% supportedIDs){
         stop( "Insert one of the following IDs to be returned (returnMetabolome):
-              HMDB, CAS, ChEBI, KEGG, CID, SID, DTXCID, DTXSID",
+              HMDB, CAS, ChEBI, KEGG, CID, SID, DTXCID",
               call. = FALSE)
     }
     
@@ -501,7 +480,7 @@ getMultiOmicsFeatures <- function( dbs = c("all"), layer = c("all"),
     
     if( "proteome" %in% layer){
         
-        if( "transcriptome" %in% layer & returnProteome == returnTranscriptome){
+        if( "transcriptome" %in% layer && returnProteome == returnTranscriptome){
             features$proteome <- trans
         } else{
             
@@ -765,7 +744,7 @@ initOmicsDataStructure <- function( layer = c("transcriptome", "proteome", "meta
 combinePvalues <- function( df, method = "stouffer", weights = NULL){
     
     method <- tolower( method)
-    if( method != "stouffer" & method != "fisher" & method != "edgington"){
+    if( method != "stouffer" && method != "fisher" && method != "edgington"){
         stop( "You can chose between the 'stouffer', 'edgington', 
               and 'fisher' method to combine p-values.",
               call. = FALSE)
