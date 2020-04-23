@@ -30,10 +30,11 @@ databases by means of the `graphite` Bioconductor package [@graphite:2018].
 Feature mapping for transcripts and proteins is supported towards Entrez Gene
 IDs, Uniprot, Gene Symbol, RefSeq, and Ensembl IDS.  The mapping is accomplished
 through the `AnnotationDbi` package [@AnnotationDbi:2019] and currently
-supported for human, mouse, and rat. ID conversion of metabolite features to
-Comptox Dashboard IDs (DTXCID, DTXSID), CAS-numbers, Pubchem IDs (CID),
-HMDB, KEGG, and ChEBI identifiers is accomplished through a comprehensive
-mapping table with nearly 900.000 compounds that is part of the package.
+supported for 11 different model organisms including human, mouse, and rat. ID
+conversion of metabolite features to Comptox Dashboard IDs (DTXCID, DTXSID),
+CAS-numbers, Pubchem IDs (CID), HMDB, KEGG, and ChEBI identifiers is accomplished
+through a comprehensive mapping table with nearly 900.000 compounds that is part
+of the package.
 
 This vignette covers a simple example workflow illustrating how the `multiGSEA`
 package works.  The omics data sets that will be used throughout the example
