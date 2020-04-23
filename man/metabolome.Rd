@@ -4,7 +4,7 @@
 \name{metabolome}
 \alias{metabolome}
 \title{Metabolomic data set that is used in the toy example provided by the `multiGSEA` package.}
-\format{A dataframe with 4 variables and 4881 measured proteome features:
+\format{A data frame with 4 variables and 4881 measured proteome features:
 \describe{
    \item{HMDB}{HMDB identifier of measured metabolites.}
    \item{logFC}{Log2-transformed fold change between treatment and control.}

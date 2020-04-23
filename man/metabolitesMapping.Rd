@@ -18,7 +18,7 @@
 data(metabolitesMapping)
 }
 \description{
-Four different sourcex of annotated metabolites, i.e., \code{HMDB},
+Four different sources of annotated metabolites, i.e., \code{HMDB},
 \code{ChEBI}, \code{CompTox}, and \code{KEGG}, have been retrieved to
 compile a comprehensive mapping of available metabolite IDs. ID formats
 that are present in the mapping table are: 

@@ -9,7 +9,7 @@
 #'
 #' @usage data(transcriptome)
 #'
-#' @format A dataframe with 4 variables and 15174 measured transcriptome features:
+#' @format A data frame with 4 variables and 15174 measured transcriptome features:
 #' \describe{
 #'    \item{Symbol}{HGNC symbol of measured transcripts.}
 #'    \item{logFC}{Log2-transformed fold change between treatment and control.}

@@ -13,6 +13,6 @@ archivePath(filename)
 String containing the path to the file.
 }
 \description{
-The function retrieves the path to a file that is cahed in the archive
+The function retrieves the path to a file that is cached in the archive
 directory.
 }

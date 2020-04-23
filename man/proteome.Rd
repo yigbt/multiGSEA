@@ -4,7 +4,7 @@
 \name{proteome}
 \alias{proteome}
 \title{Proteomic data set that is used in the toy example provided by the `multiGSEA` package.}
-\format{A dataframe with 4 variables and 8275 measured proteome features:
+\format{A data frame with 4 variables and 8275 measured proteome features:
 \describe{
    \item{Symbol}{HGNC symbol of measured proteins.}
    \item{logFC}{Log2-transformed fold change between treatment and control.}

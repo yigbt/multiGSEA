@@ -6,7 +6,7 @@ Date: 2020-03-05
 Authors@R: c(
     person( "Sebastian", "Canzler", email = "sebastian.canzler@ufz.de", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7935-9582")),
     person( "Jörg", "Hackermüller", email = "joerg.hackermueller@ufz.de", role = "aut", comment = c( ORCID = "0000-0003-4920-7072")))
-Description: Extracted features from patways derived from 8 different databases 
+Description: Extracted features from pathways derived from 8 different databases 
   (KEGG, Reactome, Biocarta, etc.) can be used on transcriptomic, proteomic, and/or
   metabolomic level to calculate a combined GSEA-based enrichment score.
 License: AGPL-3

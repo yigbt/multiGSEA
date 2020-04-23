@@ -10,6 +10,6 @@ archiveDir()
 String containing the path to the cache directory.
 }
 \description{
-Retrieve the path to the cache directory for the multiGSEA package. Create
-the cache directory if need be.
+Retrieve the path to the cache directory for the multiGSEA package.
+Create the cache directory if need be.
 }

@@ -10,7 +10,7 @@ getIDMappingDatabase(organism)
 \item{organism}{String that defines the organism.}
 }
 \value{
-AnnotationDbi databse for ID mapping.
+AnnotationDbi database for ID mapping.
 }
 \description{
 Check by means of the given organism name if the required `AnnotationDbi`

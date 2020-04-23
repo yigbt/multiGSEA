@@ -12,8 +12,7 @@ columns represent p-values derived from independent tests, e.g., different
 omics layer.}
 
 \item{method}{String that specifies the method to combine multiple p-values.
-Default: "stouffer"no visible binding for global variable Options:
-"stouffer", "fisher", "edgington"}
+Default: "stouffer" Options: "stouffer", "fisher", "edgington"}
 
 \item{weights}{List of weights that will be used in a weighted Stouffer
 method.}

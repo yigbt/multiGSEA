@@ -165,11 +165,11 @@ differentially expression analysis, since this is highly dependent on
 your experiment and analysis workflow.
 
 However, the required input format is quite simple and exactly the
-same for each input omics layer: A data frame with 3 mandatory columns,
+same for each input omics layer: A dataframe with 3 mandatory columns,
 including feature IDs, the log2-transformed fold change (logFC), and
 the associated p-value.
 
-The header of the data frame can be seen in Table \@ref(tab:omicsTable):
+The header of the dataframe can be seen in Table \@ref(tab:omicsTable):
 
 ```{r omicsTable, results='asis', echo=FALSE}
 caption <- "Structure of the necessary omics data. For each layer (here: transcriptome), feature IDs, log2FCs, and p-values are needed."
@@ -290,7 +290,7 @@ subsequent calculation of adjusted p-values can be achieved by the function
 `multiGSEA` provided three different methods to aggregate p-values. These
 methods differ in their way how they weight either small or large p-values. By
 default, `combinePvalues` will apply the Z-method or Stouffer's method
-[@Stouffer:1949] which has no bias towards small or large p-values. The widely
+[@Stouffer:1949] which has no bias towards small or large p-values. The widly
 used Fisher's combined probability test [@Fisher:1932] can also be applied but
 is known for its bias towards small p-values. Edgington's method goes the
 opposite direction by favoring large p-values [@Edgington:1972]. Those methods

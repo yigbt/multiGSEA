@@ -233,7 +233,7 @@ getOrganisms <- function(){
 #' 
 #' @param organism String that defines the organism.
 #' 
-#' @return AnnotationDbi databse for ID mapping.
+#' @return AnnotationDbi database for ID mapping.
 getIDMappingDatabase <- function( organism){
     
     # check for the installed package to do the human ID mapping
@@ -737,8 +737,7 @@ initOmicsDataStructure <- function( layer = c("transcriptome", "proteome", "meta
 #'   columns represent p-values derived from independent tests, e.g., different
 #'   omics layer.
 #' @param method String that specifies the method to combine multiple p-values.
-#'   Default: "stouffer"no visible binding for global variable Options:
-#'   "stouffer", "fisher", "edgington"
+#'   Default: "stouffer" Options: "stouffer", "fisher", "edgington"
 #' @param weights List of weights that will be used in a weighted Stouffer
 #'   method.
 #'
@@ -846,7 +845,7 @@ rankFeatures <- function( logFC, pvalues, base = 10){
 
 #' Retrieve path to a cached file.
 #'
-#' The function retrieves the path to a file that is cahed in the archive
+#' The function retrieves the path to a file that is cached in the archive
 #' directory.
 #'
 #' @param filename Name of the file.
@@ -865,8 +864,8 @@ archivePath <- function( filename){
 
 #' Retrieve the path to the cache directory.
 #'
-#' Retrieve the path to the cache directory for the multiGSEA package. Create
-#' the cache directory if need be.
+#' Retrieve the path to the cache directory for the multiGSEA package.
+#' Create the cache directory if need be.
 #'
 #' @return String containing the path to the cache directory.
 #'
@@ -877,7 +876,7 @@ archiveDir <- function(){
     
     if ( !file.exists( ad)) {
         if ( !dir.create( ad, FALSE, TRUE)) 
-            stop( "An error occured during creating the archive directory: ", ad, 
+            stop( "An error occurred during creating the archive directory: ", ad, 
                   call. = FALSE)
     }
     
