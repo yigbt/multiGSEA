@@ -22,7 +22,7 @@ mapping. Default: human}
 
 \item{returntype}{String that specifies the returning ID type. Default:
 SYMBOL Options (genes/proteins): SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ
-Options (metabolites): HMDB, CAS, DTXCID, DTXSID, CID, SID, ChEBI, KEGG}
+Options (metabolites): HMDB, CAS, DTXCID, DTXSID, CID, ChEBI, KEGG}
 }
 \value{
 Feature list with gene symbols (genes/proteins) or CHEBI IDs

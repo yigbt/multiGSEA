@@ -13,7 +13,7 @@
 #'   mapping. Default: human
 #' @param returntype String that specifies the returning ID type. Default:
 #'   SYMBOL Options (genes/proteins): SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ
-#'   Options (metabolites): HMDB, CAS, DTXCID, DTXSID, CID, SID, ChEBI, KEGG
+#'   Options (metabolites): HMDB, CAS, DTXCID, DTXSID, CID, ChEBI, KEGG
 #'
 #' @return Feature list with gene symbols (genes/proteins) or CHEBI IDs
 #'   (metabolites)
@@ -197,7 +197,7 @@ getGeneMapping <- function( features, keytype, org = "hsapiens", returntype = "S
 #'
 #' @param returntype String that specifies the returning ID type. 
 #'        Default: HMDB
-#'        Options: HMDB, CAS, DTXCID, CID, SID, ChEBI, KEGG
+#'        Options: HMDB, CAS, DTXCID, DTXSID, CID, ChEBI, KEGG
 #'
 #' @return List containing mapped gene/protein IDs.
 #'
@@ -215,10 +215,10 @@ getGeneMapping <- function( features, keytype, org = "hsapiens", returntype = "S
 getMetaboliteMapping <- function( features, keytype, returntype = "HMDB"){
     
     ## check for the correct metabolite mapping format
-    supportedIDs <- c( "HMDB", "ChEBI", "KEGG", "CAS", "DTXCID", "CID", "SID")
+    supportedIDs <- c( "HMDB", "ChEBI", "KEGG", "CAS", "DTXCID", "DTXSID", "CID")
     if( !returntype %in% supportedIDs){
         stop( "Insert one of the following IDs to be returned (returntype):
-              HMDB, CAS, ChEBI, KEGG, CID, SID, DTXCID, DTXSID", 
+              HMDB, CAS, ChEBI, KEGG, CID, DTXCID, DTXSID", 
               call. = FALSE)
     }
     
@@ -234,7 +234,7 @@ getMetaboliteMapping <- function( features, keytype, returntype = "HMDB"){
     
     map <- map[ !is.na( map)]
     
-    if( returntype %in% c( "DTXCID", "HMDB") && length( map) > 0)
+    if( returntype %in% c( "DTXCID", "DTXSID", "HMDB") && length( map) > 0)
         map <- paste0( returntype, map)
     
     return( map)
@@ -261,7 +261,7 @@ getMetaboliteMapping <- function( features, keytype, returntype = "HMDB"){
 #' @param returnProteome String specifying the returned protein ID format.
 #'   Default: SYMBOL Options: SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ
 #' @param returnMetabolome String specifying the returned metabolite ID format.
-#'   Default: HMDB Options: HMDB, CAS, DTXCID, CID, SID, ChEBI, KEGG
+#'   Default: HMDB Options: HMDB, CAS, DTXCID, DTXSID, CID, ChEBI, KEGG
 #' @param organism String specifying the organism of interest. This has direct
 #'   influence on the available pathway databases. Default: "hsapiens" 
 #'   Options: see \code{\link[multiGSEA]{getOrganisms}}
@@ -326,10 +326,10 @@ getMultiOmicsFeatures <- function( dbs = c("all"), layer = c("all"),
     }
     
     ## check for the correct metabolite mapping format
-    supportedIDs <- c( "HMDB", "ChEBI", "KEGG", "CAS", "DTXCID", "CID", "SID")
+    supportedIDs <- c( "HMDB", "ChEBI", "KEGG", "CAS", "DTXCID", "DTXSID", "CID")
     if( !returnMetabolome %in% supportedIDs){
         stop( "Insert one of the following IDs to be returned (returnMetabolome):
-              HMDB, CAS, ChEBI, KEGG, CID, SID, DTXCID",
+              HMDB, CAS, ChEBI, KEGG, CID, DTXCID, DTXSID",
               call. = FALSE)
     }
     
