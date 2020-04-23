@@ -49,41 +49,25 @@ and the non-targeted metabolome raw data can be found in the online supplement.
 
 ## Installation
 
-A working environment where `multiGSEA` can easily be installed is
-provided as conda environment yml file in the [github
-repository](https://github.com/yigbt/multiGSEA/conda_environment.yml).
+There are two different ways to install the `multiGSEA` package.
 
-After downloading the file, it can be installed by the following commands:
+First, the `multiGSEA` package is part of [Bioconductor](https://www.bioconductor.org/). 
+Hence, the best way to install the package is via `BiocManager`. Start R (>=4.0.0) and run the following commands:
 
-```{r conda, engine='bash', eval=FALSE}
-conda env create -f path/to/file/conda_environment.yml
+```{r bioconductor, eval=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
 
-# activation of the working environment
-source activate multiGSEA_testing
+BiocManager::install("multiGSEA")
 ```
 
-There are different ways to install the `multiGSEA` package.
-
-First, the `multiGSEA` package is hosted on our github page
+Alternatively, the `multiGSEA` package is hosted on our github page
 https://github.com/yigbt/multiGSEA and can be installed via the
 `devtools` package:
 
 ```{r devtools, eval=FALSE}
 install.packages("devtools")
 devtools::install_github("https://github.com/yigbt/multiGSEA")
-```
-
-Alternatively, `multiGSEA` can be found in [Bioconductor](https://www.bioconductor.org/):
-
-```{r bioconductor, eval=FALSE}
-
-```
-
-The `multiGSEA` package can also be installed from the command line, subsequent to downloading the package:
-
-```{r command_line, eval=FALSE, engine='bash'}
-cd /path/to/package/
-R CMD INSTALL multiGSEA_1.0.tar.gz
 ```
 
 Once installed, just load the `multiGSEA` package with:
@@ -113,30 +97,47 @@ has been measured in human cell lines. We therefore need the `org.Hs.eg.db`
 package [@CarlsonHs:2019] for transcript and protein mapping. In case the
 omics data was measured in mouse or rat, we would need the packages
 `org.Mm.eg.db` [@CarlsonMm:2019] and `org.Rn.eg.db` [@CarlsonRn:2019],
-respectively.
+respectively. 
 
-```{r load_libraries, results='hide', warning=FALSE, message=FALSE}
-Bioc_packages <- c( "AnnotationDbi", "org.Hs.eg.db", "graphite", "fgsea")
+```{r load_mapping_library, results='hide', warning=FALSE, message=FALSE}
+library( "org.Hs.eg.db")
+```
 
-R_packages <- c("knitr", "dplyr", "Rcpp", "metap")
+In principle, `multiGSEA` is able to deal with 11 different model organisms.
+A summary of supported organisms, they naming format within `multiGSEA` and
+their respective `AnnotationDbi` package is shown in Table
+\@ref(tab:OrganismsTable).
 
-libs <- c( Bioc_packages, R_packages)
+```{r organismsTable, results='asis', echo=FALSE}
+caption <- "Supported organisms, their abbreviations being used in `multiGSEA`,
+            and mapping database that are needed for feature conversion. 
+            Supported abbreviations can be seen with `getOrganisms()`"
+df <- data.frame( Organisms = c( "Human", "Mouse", "Rat", "Dog", "Cow", "Pig",
+                                 "Chicken", "Zebrafish", "Frog", "Fruit Fly", 
+                                 "C.elegans"),
+                  Abbreviations = c( "hsapiens", "mmusculus", "rnorvegicus", 
+                                    "cfamiliaris", "btaurus", "sscrofa", 
+                                    "ggallus", "drerio", "xlaevis", 
+                                    "dmelanogaster", "celegans"),
+                  Mapping = c( "org.Hs.eg.db", "org.Mm.eg.db", "org.Rn.eg.db",
+                               "org.Cf.eg.db", "org.Bt.eg.db", "org.Ss.eg.db",
+                               "org.Gg.eg.db", "org.Xl.eg.db", "org.Dr.eg.db",
+                               "org.Dm.eg.db", "org.Ce.eg.db"))
 
-lapply(libs, require, character.only = TRUE)
+knitr::kable( df, caption = caption)
+
 ```
 
 To run the analysis of this vignette, load the installed version of
 `multiGSEA`.
 
 ```{r load_multiGSEA_package, results='hide'}
-
 library( multiGSEA)
-
 ```
 
-Load the omics data for each layer where an enrichment should be calculated. The
-example data is provided within the package and already preprocessed such that
-we have log2 transformed fold changes and their associated p-values.
+Load the omics data for each layer where an enrichment should be calculated.
+The example data is provided within the package and already preprocessed such
+that we have log2 transformed fold changes and their associated p-values.
 
 ```{r load_omics_data}
 
@@ -172,8 +173,16 @@ the associated p-value.
 The header of the data frame can be seen in Table \@ref(tab:omicsTable):
 
 ```{r omicsTable, results='asis', echo=FALSE}
-caption <- "Structure of the necessary omics data. For each layer (here: transcriptome), feature IDs, log2FCs, and p-values are needed."
-kable( transcriptome %>% arrange( Symbol) %>% dplyr::slice( 1:6), caption = caption)
+caption <- "Structure of the necessary omics data. For each layer
+            (here: transcriptome), feature IDs, log2FCs, and p-values 
+            are needed."
+
+knitr::kable( 
+    transcriptome %>% 
+    dplyr::arrange( Symbol) %>% 
+    dplyr::slice( 1:6), 
+    caption = caption
+)
 ```
 
 
@@ -313,9 +322,18 @@ For displaying reasons, only the adjusted p-values are shown in Table
 \@ref(tab:resultTable).
 
 ```{r resultTable, results='asis', echo=FALSE}
-caption <- "Table summarizing the top 15 pathways. Pathways from KEGG, Reactome, and BioCarta are listed based on their aggregated adjusted p-value. Corrected p-values are displayed for each omics layer separately and aggregated by means of the Stouffer's Z-method."
-kable( df %>% dplyr::arrange( combined_padj) %>% dplyr::select( c( transcriptome_padj, proteome_padj, metabolome_padj, combined_padj))
-       %>% dplyr::slice( 1:15), caption = caption)
+caption <- "Table summarizing the top 15 pathways. Pathways from KEGG, Reactome,
+            and BioCarta are listed based on their aggregated adjusted p-value. 
+            Corrected p-values are displayed for each omics layer separately and 
+            aggregated by means of the Stouffer's Z-method."
+
+knitr::kable( 
+    df %>% 
+    dplyr::arrange( combined_padj) %>% 
+    dplyr::select( c( transcriptome_padj, proteome_padj, metabolome_padj, combined_padj)) %>% 
+    dplyr::slice( 1:15),
+    caption = caption
+)
 ```
 
 
