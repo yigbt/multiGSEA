@@ -4,7 +4,7 @@
 \name{transcriptome}
 \alias{transcriptome}
 \title{Transcriptomic data set that is used in the toy example provided by the `multiGSEA` package.}
-\format{A data frame with 4 variables and 15174 measured transcriptome features:
+\format{A tibble with 4 variables and 15174 measured transcriptome features:
 \describe{
    \item{Symbol}{HGNC symbol of measured transcripts.}
    \item{logFC}{Log2-transformed fold change between treatment and control.}

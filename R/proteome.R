@@ -9,7 +9,7 @@
 #'
 #' @usage data(proteome)
 #'
-#' @format A data frame with 4 variables and 8275 measured proteome features:
+#' @format A tibble with 4 variables and 8275 measured proteome features:
 #' \describe{
 #'    \item{Symbol}{HGNC symbol of measured proteins.}
 #'    \item{logFC}{Log2-transformed fold change between treatment and control.}

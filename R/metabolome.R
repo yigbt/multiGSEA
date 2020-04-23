@@ -9,7 +9,7 @@
 #'
 #' @usage data(metabolome)
 #'
-#' @format A data frame with 4 variables and 4881 measured proteome features:
+#' @format A tibble with 4 variables and 4881 measured proteome features:
 #' \describe{
 #'    \item{HMDB}{HMDB identifier of measured metabolites.}
 #'    \item{logFC}{Log2-transformed fold change between treatment and control.}
