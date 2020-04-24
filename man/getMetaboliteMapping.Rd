@@ -12,7 +12,7 @@ getMetaboliteMapping(features, keytype, returntype = "HMDB")
 
 \item{keytype}{String specifying the ID type, e.g., "ChEBI" or "KEGGCOMP".}
 
-\item{returntype}{String that specifies the returning ID type. 
+\item{returntype}{String that specifies the returning ID type.
 Default: HMDB
 Options: HMDB, CAS, DTXCID, DTXSID, CID, ChEBI, KEGG}
 }
@@ -29,13 +29,12 @@ Dashboard}, \href{https://pubchem.ncbi.nlm.nih.gov/}{PubChem},
 is provided with the package.
 }
 \examples{
-data( metabolitesMapping)
-features <- graphite::nodes( graphite::pathways( "hsapiens", "kegg")[[1]], which = "metabolites")
-features <- gsub( "KEGGCOMP:", "", features)
+data(metabolitesMapping)
+features <- graphite::nodes(graphite::pathways("hsapiens", "kegg")[[1]], which = "metabolites")
+features <- gsub("KEGGCOMP:", "", features)
 keytype <- "KEGG"
 
-getMetaboliteMapping( features, keytype)
+getMetaboliteMapping(features, keytype)
 
-getMetaboliteMapping( features, keytype = "KEGG", returntype = "CID")
-
+getMetaboliteMapping(features, keytype = "KEGG", returntype = "CID")
 }

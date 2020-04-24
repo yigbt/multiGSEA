@@ -3,15 +3,15 @@
 #' Four different sources of annotated metabolites, i.e., \code{HMDB},
 #' \code{ChEBI}, \code{CompTox}, and \code{KEGG}, have been retrieved to
 #' compile a comprehensive mapping of available metabolite IDs. ID formats
-#' that are present in the mapping table are: 
+#' that are present in the mapping table are:
 #' DTXCID (Comptox),
-#' DTXSID (Comptox), 
+#' DTXSID (Comptox),
 #' CAS-number,
-#' CID (Pubchem), 
+#' CID (Pubchem),
 #' HMDB,
 #' ChEBI,
 #' and KEGG
-#' 
+#'
 #' @docType data
 #'
 #' @usage data(metabolitesMapping)

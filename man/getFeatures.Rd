@@ -36,14 +36,14 @@ extracted for \'proteins\' or \'metabolites\'. Features will by default be
 mapped to gene symbols.
 }
 \examples{
-pathways <- graphite::pathways( "hsapiens", "kegg")[[1]]
-getFeatures( pathways)
+pathways <- graphite::pathways("hsapiens", "kegg")[[1]]
+getFeatures(pathways)
 \donttest{
-pathways <- graphite::pathways( "mmusculus", "kegg")[[1]]
-getFeatures( pathways, which = "metabolites", org = "mmusculus", returntype = "HMDB")
+pathways <- graphite::pathways("mmusculus", "kegg")[[1]]
+getFeatures(pathways, which = "metabolites", org = "mmusculus", returntype = "HMDB")
 
-pathways <- graphite::pathways( "mmusculus", "kegg")
-getFeatures( pathways, which = "proteins", org = "mmusculus", returntype = "SYMBOL")
+pathways <- graphite::pathways("mmusculus", "kegg")
+getFeatures(pathways, which = "proteins", org = "mmusculus", returntype = "SYMBOL")
 }
 
 }

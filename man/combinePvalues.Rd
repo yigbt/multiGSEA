@@ -27,19 +27,18 @@ that are based on the same null hypothesis. The Stouffer method can also be
 applied in a weighted fashion.
 }
 \examples{
-df <- cbind( runif(5), runif(5), runif(5))
-colnames( df) <- c("trans.pval", "prot.pval", "meta.pval")
+df <- cbind(runif(5), runif(5), runif(5))
+colnames(df) <- c("trans.pval", "prot.pval", "meta.pval")
 
 # run the unweighted summation of z values
-combinePvalues( df)
+combinePvalues(df)
 
 # run the weighted variant
-combinePvalues( df, weights = c( 10,5,1))
+combinePvalues(df, weights = c(10, 5, 1))
 
 # run the Fisher's combined probability test
-combinePvalues( df, method = "fisher")
+combinePvalues(df, method = "fisher")
 
 # run the Edgington's method
-combinePvalues( df, method = "edgington")
-
+combinePvalues(df, method = "edgington")
 }

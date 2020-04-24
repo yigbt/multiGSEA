@@ -20,7 +20,6 @@ and metabolome.
 }
 \examples{
 initOmicsDataStructure()
-initOmicsDataStructure( c("transcriptome", "proteome"))
-initOmicsDataStructure( c("Transcriptome", "Metabolome"))
-
+initOmicsDataStructure(c("transcriptome", "proteome"))
+initOmicsDataStructure(c("Transcriptome", "Metabolome"))
 }

@@ -28,19 +28,17 @@ ranking can be calculated by means of the function
 \examples{
 
 # Download pathway definition and extract features
-pathways <- getMultiOmicsFeatures( dbs = c( "kegg"), layer = c("transcriptome", "proteome"))
+pathways <- getMultiOmicsFeatures(dbs = c("kegg"), layer = c("transcriptome", "proteome"))
 
 # load omics data and calculate ranks
 data(transcriptome)
 data(proteome)
-ranks <- initOmicsDataStructure( c("transcriptome", "proteome"))
-ranks$transcriptome <- rankFeatures( transcriptome$logFC, transcriptome$pValue)
-names( ranks$transcriptome) <- transcriptome$Symbol
-ranks$proteome <- rankFeatures( proteome$logFC, proteome$pValue)
-names( ranks$proteome) <- proteome$Symbol
+ranks <- initOmicsDataStructure(c("transcriptome", "proteome"))
+ranks$transcriptome <- rankFeatures(transcriptome$logFC, transcriptome$pValue)
+names(ranks$transcriptome) <- transcriptome$Symbol
+ranks$proteome <- rankFeatures(proteome$logFC, proteome$pValue)
+names(ranks$proteome) <- proteome$Symbol
 
 ## run the enrichment
-multiGSEA( pathways, ranks)
-
-
+multiGSEA(pathways, ranks)
 }

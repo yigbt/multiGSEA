@@ -2,9 +2,9 @@
 #'
 #' Processed metabolomics data set that will be used throughout
 #' the vignette provided by the `multiGSEA` package. The raw data
-#' was originally published by [Quiros _et al._](http://doi.org/10.1083/jcb.201702058) 
+#' was originally published by [Quiros _et al._](http://doi.org/10.1083/jcb.201702058)
 #' and can be accessed within the online supplementary material.
-#' 
+#'
 #' @docType data
 #'
 #' @usage data(metabolome)

@@ -4,7 +4,7 @@
 #' vignette provided by the `multiGSEA` package. The raw data was originally
 #' published by [Quiros _et al._](http://doi.org/10.1083/jcb.201702058) and
 #' deposited at [NCBI Geo](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE84631).
-#' 
+#'
 #' @docType data
 #'
 #' @usage data(transcriptome)

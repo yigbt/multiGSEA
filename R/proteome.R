@@ -4,7 +4,7 @@
 #' provided by the `multiGSEA` package. The raw data was originally published
 #' by [Quiros _et al._](http://doi.org/10.1083/jcb.201702058) and deposited at
 #' [ProteomeXchange](http://proteomecentral.proteomexchange.org/cgi/GetDataset?ID=PXD006293).
-#' 
+#'
 #' @docType data
 #'
 #' @usage data(proteome)

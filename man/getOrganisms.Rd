@@ -18,5 +18,4 @@ annotation that can be queried by `graphite`.
 }
 \examples{
 getOrganisms()
-
 }

@@ -6,12 +6,10 @@
 #' @param filename Name of the file.
 #'
 #' @return String containing the path to the file.
-archivePath <- function( filename){
-    
+archivePath <- function(filename) {
     ad <- archiveDir()
-    filename <- paste0( filename, ".rds")
-    return( file.path( ad, filename, fsep = .Platform$file.sep))
-    
+    filename <- paste0(filename, ".rds")
+    return(file.path(ad, filename, fsep = .Platform$file.sep))
 }
 
 
@@ -26,18 +24,18 @@ archivePath <- function( filename){
 #' @return String containing the path to the cache directory.
 #'
 #' @importFrom rappdirs user_cache_dir
-archiveDir <- function(){
-    
-    ad <- user_cache_dir( "multiGSEA")
-    
-    if ( !file.exists( ad)) {
-        if ( !dir.create( ad, FALSE, TRUE)) 
-            stop( "An error occurred during creating the archive directory: ", ad, 
-                  call. = FALSE)
+archiveDir <- function() {
+    ad <- user_cache_dir("multiGSEA")
+
+    if (!file.exists(ad)) {
+        if (!dir.create(ad, FALSE, TRUE)) {
+              stop("An error occurred during creating the archive directory: ", ad,
+                  call. = FALSE
+              )
+          }
     }
-    
+
     return(ad)
-    
 }
 
 
@@ -54,15 +52,12 @@ archiveDir <- function(){
 #' @return Content of file.
 #'
 #' @importFrom methods is
-loadLocal <- function( filename){
-    
-    res <- try( readRDS( filename), silent = TRUE)
-    
-    if( "try-error" %in% is(res)){
-        return( NULL)
-    } else{
-        return( res)
-    }
-    
-}
+loadLocal <- function(filename) {
+    res <- try(readRDS(filename), silent = TRUE)
 
+    if ("try-error" %in% is(res)) {
+        return(NULL)
+    } else {
+        return(res)
+    }
+}

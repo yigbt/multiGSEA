@@ -28,21 +28,22 @@ this function maps those IDs to a given format. Depending on the organism,
 additional packages have to be installed.
 }
 \examples{
-features <- graphite::nodes( graphite::pathways( "hsapiens", "kegg")[[1]])
-features <- gsub( "ENTREZID:", "", features)
+features <- graphite::nodes(graphite::pathways("hsapiens", "kegg")[[1]])
+features <- gsub("ENTREZID:", "", features)
 keytype <- "ENTREZID"
-getGeneMapping( features, keytype)
+getGeneMapping(features, keytype)
 
-getGeneMapping( features, keytype, returntype = "UNIPROT")
-
+getGeneMapping(features, keytype, returntype = "UNIPROT")
 \donttest{
-features <- graphite::nodes( graphite::pathways( "rnorvegicus", "reactome")[[1]])
-features <- gsub( "UNIPROT:", "", features)
-getGeneMapping( features, keytype = "UNIPROT", org = "rnorvegicus")
+features <- graphite::nodes(graphite::pathways("rnorvegicus", "reactome")[[1]])
+features <- gsub("UNIPROT:", "", features)
+getGeneMapping(features, keytype = "UNIPROT", org = "rnorvegicus")
 
-getGeneMapping( features, keytype = "UNIPROT",
-                org = "rnorvegicus",
-                returntype = "ENSEMBL")
+getGeneMapping(features,
+    keytype = "UNIPROT",
+    org = "rnorvegicus",
+    returntype = "ENSEMBL"
+)
 }
 
 }

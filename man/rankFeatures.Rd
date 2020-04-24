@@ -23,6 +23,5 @@ implicated through their assigned p-value.
 \examples{
 logFC <- rnorm(10)
 pvalues <- runif(10)
-rankFeatures( logFC, pvalues)
-
+rankFeatures(logFC, pvalues)
 }

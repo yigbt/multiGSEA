@@ -23,21 +23,22 @@ row of the data frame represents one pathway.
 }
 \examples{
 # Download pathway definition and extract features
-pathways <- getMultiOmicsFeatures( dbs = c( "kegg"), layer = c("transcriptome", "proteome"))
+pathways <- getMultiOmicsFeatures(dbs = c("kegg"), layer = c("transcriptome", "proteome"))
 
 # load omics data and calculate ranks
 data(transcriptome)
 data(proteome)
-ranks <- initOmicsDataStructure( c("transcriptome", "proteome"))
-ranks$transcriptome <- rankFeatures( transcriptome$logFC, transcriptome$pValue)
-names( ranks$transcriptome) <- transcriptome$Symbol
-ranks$proteome <- rankFeatures( proteome$logFC, proteome$pValue)
-names( ranks$proteome) <- proteome$Symbol
+ranks <- initOmicsDataStructure(c("transcriptome", "proteome"))
+ranks$transcriptome <- rankFeatures(transcriptome$logFC, transcriptome$pValue)
+names(ranks$transcriptome) <- transcriptome$Symbol
+ranks$proteome <- rankFeatures(proteome$logFC, proteome$pValue)
+names(ranks$proteome) <- proteome$Symbol
 
 # run the enrichment
-es <- multiGSEA( pathways, ranks)
+es <- multiGSEA(pathways, ranks)
 
-extractPvalues( enrichmentScores = es,
-                pathwayNames = names( pathways[[1]]))
-
+extractPvalues(
+    enrichmentScores = es,
+    pathwayNames = names(pathways[[1]])
+)
 }

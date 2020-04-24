@@ -18,36 +18,32 @@
 #' @examples
 #'
 #' # Download pathway definition and extract features
-#' pathways <- getMultiOmicsFeatures( dbs = c( "kegg"), layer = c("transcriptome", "proteome"))
+#' pathways <- getMultiOmicsFeatures(dbs = c("kegg"), layer = c("transcriptome", "proteome"))
 #'
 #' # load omics data and calculate ranks
 #' data(transcriptome)
 #' data(proteome)
-#' ranks <- initOmicsDataStructure( c("transcriptome", "proteome"))
-#' ranks$transcriptome <- rankFeatures( transcriptome$logFC, transcriptome$pValue)
-#' names( ranks$transcriptome) <- transcriptome$Symbol
-#' ranks$proteome <- rankFeatures( proteome$logFC, proteome$pValue)
-#' names( ranks$proteome) <- proteome$Symbol
-#' 
+#' ranks <- initOmicsDataStructure(c("transcriptome", "proteome"))
+#' ranks$transcriptome <- rankFeatures(transcriptome$logFC, transcriptome$pValue)
+#' names(ranks$transcriptome) <- transcriptome$Symbol
+#' ranks$proteome <- rankFeatures(proteome$logFC, proteome$pValue)
+#' names(ranks$proteome) <- proteome$Symbol
+#'
 #' ## run the enrichment
-#' multiGSEA( pathways, ranks)
-#'
-#'
+#' multiGSEA(pathways, ranks)
 #' @importFrom fgsea fgsea
 #'
 #' @export
 multiGSEA <- function(pathways, ranks) {
-    
+
     # Go through all omics layer.
     es <- lapply(names(pathways), function(omics) {
         fgsea(pathways[[omics]], ranks[[omics]], nperm = 1000, minSize = 5)
-        
     })
-    
+
     names(es) <- names(pathways)
-    
+
     return(es)
-    
 }
 
 
@@ -67,46 +63,45 @@ multiGSEA <- function(pathways, ranks) {
 #'
 #' @examples
 #' # Download pathway definition and extract features
-#' pathways <- getMultiOmicsFeatures( dbs = c( "kegg"), layer = c("transcriptome", "proteome"))
+#' pathways <- getMultiOmicsFeatures(dbs = c("kegg"), layer = c("transcriptome", "proteome"))
 #'
 #' # load omics data and calculate ranks
 #' data(transcriptome)
 #' data(proteome)
-#' ranks <- initOmicsDataStructure( c("transcriptome", "proteome"))
-#' ranks$transcriptome <- rankFeatures( transcriptome$logFC, transcriptome$pValue)
-#' names( ranks$transcriptome) <- transcriptome$Symbol
-#' ranks$proteome <- rankFeatures( proteome$logFC, proteome$pValue)
-#' names( ranks$proteome) <- proteome$Symbol
-#' 
-#' # run the enrichment
-#' es <- multiGSEA( pathways, ranks)
-#' 
-#' extractPvalues( enrichmentScores = es,
-#'                 pathwayNames = names( pathways[[1]]))
+#' ranks <- initOmicsDataStructure(c("transcriptome", "proteome"))
+#' ranks$transcriptome <- rankFeatures(transcriptome$logFC, transcriptome$pValue)
+#' names(ranks$transcriptome) <- transcriptome$Symbol
+#' ranks$proteome <- rankFeatures(proteome$logFC, proteome$pValue)
+#' names(ranks$proteome) <- proteome$Symbol
 #'
+#' # run the enrichment
+#' es <- multiGSEA(pathways, ranks)
+#'
+#' extractPvalues(
+#'     enrichmentScores = es,
+#'     pathwayNames = names(pathways[[1]])
+#' )
 #' @export
-extractPvalues <- function( enrichmentScores, pathwayNames){
-    
+extractPvalues <- function(enrichmentScores, pathwayNames) {
+
     # Go through all the pathways
-    res <- lapply( pathwayNames, function( name){ 
-        
+    res <- lapply(pathwayNames, function(name) {
+
         # Go through all the possible omics layer
-        unlist(lapply( names( enrichmentScores), function( y){
-            
-            df <- enrichmentScores[[y]][which( enrichmentScores[[y]]$pathway== name),c(2,3)]
-            if( nrow( df) == 0){ df <- data.frame( pval = NA, padj = NA)}
-            names(df) <- paste0( y, "_", names(df))
+        unlist(lapply(names(enrichmentScores), function(y) {
+            df <- enrichmentScores[[y]][which(enrichmentScores[[y]]$pathway == name), c(2, 3)]
+            if (nrow(df) == 0) {
+                df <- data.frame(pval = NA, padj = NA)
+            }
+            names(df) <- paste0(y, "_", names(df))
             df
-            
         }))
-        
     })
-    
+
     # Combine the list elements to a data frame and assign the pathway names as rownames
-    res <- data.frame( do.call( rbind, res))
-    
-    return( res)
-    
+    res <- data.frame(do.call(rbind, res))
+
+    return(res)
 }
 
 
@@ -129,73 +124,69 @@ extractPvalues <- function( enrichmentScores, pathwayNames){
 #' @return Vector of length \code{nrow(df)} with combined p-values.
 #'
 #' @examples
-#' df <- cbind( runif(5), runif(5), runif(5))
-#' colnames( df) <- c("trans.pval", "prot.pval", "meta.pval")
+#' df <- cbind(runif(5), runif(5), runif(5))
+#' colnames(df) <- c("trans.pval", "prot.pval", "meta.pval")
 #'
 #' # run the unweighted summation of z values
-#' combinePvalues( df)
+#' combinePvalues(df)
 #'
 #' # run the weighted variant
-#' combinePvalues( df, weights = c( 10,5,1))
+#' combinePvalues(df, weights = c(10, 5, 1))
 #'
 #' # run the Fisher's combined probability test
-#' combinePvalues( df, method = "fisher")
+#' combinePvalues(df, method = "fisher")
 #'
 #' # run the Edgington's method
-#' combinePvalues( df, method = "edgington")
-#'
+#' combinePvalues(df, method = "edgington")
 #' @importFrom metap sumz sumlog sump
 #'
 #' @export
-combinePvalues <- function( df, method = "stouffer", weights = NULL){
-    
-    method <- tolower( method)
-    if( !method %in% c( "stouffer", "fisher", "edgington")){
-        stop( "You can chose between the 'stouffer', 'edgington', 
+combinePvalues <- function(df, method = "stouffer", weights = NULL) {
+    method <- tolower(method)
+    if (!method %in% c("stouffer", "fisher", "edgington")) {
+        stop("You can chose between the 'stouffer', 'edgington', 
               and 'fisher' method to combine p-values.",
-              call. = FALSE)
+            call. = FALSE
+        )
     }
-    
-    cols <- grep( "pval", colnames( df))
-    
-    pvals <- apply( df, 1, function( row){
-        
-        row <- row[ cols]
-        row <- row[ !is.na( row)]
-        
-        if( length( row) >= 2) {
-            if( method == "fisher"){
-                p <- sumlog( row)
+
+    cols <- grep("pval", colnames(df))
+
+    pvals <- apply(df, 1, function(row) {
+        row <- row[cols]
+        row <- row[!is.na(row)]
+
+        if (length(row) >= 2) {
+            if (method == "fisher") {
+                p <- sumlog(row)
                 p$p
-            }else if( method == "edgington"){
-                p <- sump( row)
+            } else if (method == "edgington") {
+                p <- sump(row)
                 p$p
-            }else {
-                
+            } else {
+
                 ## sumz allows only p-values smaller than 1
-                row <- row[ row > 0 & row < 1]
-                
-                if( length( row) >= 2){
-                    if( length( weights) > 0){
-                        p <- sumz( row, weights = weights)
-                    }else{
-                        p <- sumz( row)
+                row <- row[row > 0 & row < 1]
+
+                if (length(row) >= 2) {
+                    if (length(weights) > 0) {
+                        p <- sumz(row, weights = weights)
+                    } else {
+                        p <- sumz(row)
                     }
                     p$p
-                }else if( length( row == 1)){
+                } else if (length(row == 1)) {
                     row[1]
-                }else{
+                } else {
                     NA
                 }
-                
             }
-        } else if( length( row) == 1){
+        } else if (length(row) == 1) {
             row[1]
-        } else{
+        } else {
             NA
         }
     })
-    
-    return( pvals)
-    
+
+    return(pvals)
 }
