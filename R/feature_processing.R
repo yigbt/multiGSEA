@@ -43,7 +43,8 @@ getFeatures <- function( pathway, which = "proteins", org = "hsapiens", returnty
     
     ## check for the correct organism 
     if( !( org %in% getOrganisms() )){
-        stop( "Please insert a correct organism name! Use getOrganisms() to see all supported organisms.", 
+        stop( "Please insert a correct organism name! Use getOrganisms() 
+              to see all supported organisms.", 
               call. = FALSE)
     }
     
@@ -54,22 +55,14 @@ getFeatures <- function( pathway, which = "proteins", org = "hsapiens", returnty
     
     if( which == "proteins"){
         
-        # Remove indentifier strings and keep only the IDs
-        if( startsWith( features[1], "ENTREZ")){ 
-            mapped <- gsub( "ENTREZID:", "", features)
-            mapped <- getGeneMapping( features = mapped, keytype = "ENTREZID",
-                                      org = org, returntype = returntype)
-        }
-        if( startsWith( features[1], "UNIPROT")){
-            mapped <- gsub( "UNIPROT:", "", features)
-            mapped <- getGeneMapping( features = mapped, keytype = "UNIPROT",
-                                      org = org, returntype = returntype) 
-        }
-        if( startsWith( features[1], "FLYBASECG")){ 
-            mapped <- gsub( "FLYBASECG:", "", features)
-            mapped <- getGeneMapping( features = mapped, keytype = "FLYBASECG",
-                                      org = org, returntype = returntype)
-        }
+        ## extract the keytype of the ID format
+        kt <- gsub( ":.*", "", features[1])
+        mapped <- gsub( "[A-Z]+:", "", features)
+        
+        ## get the mapping from the keytype to the user-specific type
+        mapped <- getGeneMapping( features = mapped, keytype = kt,
+                                  org = org, returntype = returntype)
+        
     }
     
     ## its special for metabolites, because sometimes there are different
