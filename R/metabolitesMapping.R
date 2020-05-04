@@ -12,6 +12,8 @@
 #' ChEBI,
 #' and KEGG
 #'
+#' @name metabolitesMapping
+#'
 #' @docType data
 #'
 #' @usage data(metabolitesMapping)
@@ -31,4 +33,4 @@
 #'
 #' @examples
 #' data(metabolitesMapping)
-"metabolitesMapping"
+NULL

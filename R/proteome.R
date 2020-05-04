@@ -5,6 +5,8 @@
 #' by [Quiros _et al._](http://doi.org/10.1083/jcb.201702058) and deposited at
 #' [ProteomeXchange](http://proteomecentral.proteomexchange.org/cgi/GetDataset?ID=PXD006293).
 #'
+#' @name proteome
+#'
 #' @docType data
 #'
 #' @usage data(proteome)
@@ -21,4 +23,4 @@
 #'
 #' @examples
 #' data(proteome)
-"proteome"
+NULL

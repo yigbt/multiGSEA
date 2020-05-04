@@ -5,6 +5,8 @@
 #' was originally published by [Quiros _et al._](http://doi.org/10.1083/jcb.201702058)
 #' and can be accessed within the online supplementary material.
 #'
+#' @name metabolome
+#'
 #' @docType data
 #'
 #' @usage data(metabolome)
@@ -21,4 +23,4 @@
 #'
 #' @examples
 #' data(metabolome)
-"metabolome"
+NULL
