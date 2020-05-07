@@ -44,6 +44,7 @@ multiGSEA <- function(pathways, ranks) {
     names(es) <- names(pathways)
 
     return(es)
+    
 }
 
 
@@ -102,6 +103,7 @@ extractPvalues <- function(enrichmentScores, pathwayNames) {
     res <- data.frame(do.call(rbind, res))
 
     return(res)
+    
 }
 
 
@@ -142,6 +144,7 @@ extractPvalues <- function(enrichmentScores, pathwayNames) {
 #'
 #' @export
 combinePvalues <- function(df, method = "stouffer", weights = NULL) {
+    
     method <- tolower(method)
     if (!method %in% c("stouffer", "fisher", "edgington")) {
         stop("You can chose between the 'stouffer', 'edgington', 
@@ -189,4 +192,5 @@ combinePvalues <- function(df, method = "stouffer", weights = NULL) {
     })
 
     return(pvals)
+    
 }

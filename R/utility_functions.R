@@ -7,9 +7,12 @@
 #'
 #' @return String containing the path to the file.
 archivePath <- function(filename) {
+    
     ad <- archiveDir()
-    filename <- paste0(filename, ".rds")
-    return(file.path(ad, filename, fsep = .Platform$file.sep))
+    filename <- paste0( filename, ".rds")
+    
+    return( file.path( ad, filename, fsep = .Platform$file.sep))
+    
 }
 
 
@@ -25,6 +28,7 @@ archivePath <- function(filename) {
 #'
 #' @importFrom rappdirs user_cache_dir
 archiveDir <- function() {
+    
     ad <- user_cache_dir("multiGSEA")
 
     if (!file.exists(ad)) {
@@ -36,6 +40,7 @@ archiveDir <- function() {
     }
 
     return(ad)
+    
 }
 
 
@@ -53,6 +58,7 @@ archiveDir <- function() {
 #'
 #' @importFrom methods is
 loadLocal <- function(filename) {
+    
     res <- try(readRDS(filename), silent = TRUE)
 
     if ("try-error" %in% is(res)) {
@@ -60,4 +66,5 @@ loadLocal <- function(filename) {
     } else {
         return(res)
     }
+    
 }

@@ -28,7 +28,7 @@ Default: SYMBOL Options: SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ}
 Default: SYMBOL Options: SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ}
 
 \item{returnMetabolome}{String specifying the returned metabolite ID format.
-Default: HMDB Options: HMDB, CAS, DTXCID, DTXSID, CID, ChEBI, KEGG}
+Default: HMDB Options: HMDB, CAS, DTXCID, DTXSID, SID, CID, ChEBI, KEGG, Drugbank}
 
 \item{organism}{String specifying the organism of interest. This has direct
 influence on the available pathway databases. Default: "hsapiens"

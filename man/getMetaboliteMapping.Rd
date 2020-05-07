@@ -14,7 +14,7 @@ getMetaboliteMapping(features, keytype, returntype = "HMDB")
 
 \item{returntype}{String that specifies the returning ID type.
 Default: HMDB
-Options: HMDB, CAS, DTXCID, DTXSID, CID, ChEBI, KEGG}
+Options: HMDB, CAS, DTXCID, DTXSID, SID, CID, ChEBI, KEGG, Drugbank}
 }
 \value{
 List containing mapped gene/protein IDs.
@@ -26,7 +26,7 @@ more ID formats, this function maps those IDs to a given format. The complete
 mapping table based on \href{https://comptox.epa.gov/dashboard}{Comptox
 Dashboard}, \href{https://pubchem.ncbi.nlm.nih.gov/}{PubChem},
 \href{https://hmdb.ca/}{HMDB}, and \href{https://www.ebi.ac.uk/chebi}{ChEBI}
-is provided with the package.
+is provided in the AnnotationHub package metaboliteIDmapping.
 }
 \examples{
 data(metabolitesMapping)
