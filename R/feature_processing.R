@@ -13,7 +13,7 @@
 #'   mapping. Default: human
 #' @param returntype String that specifies the returning ID type. Default:
 #'   SYMBOL Options (genes/proteins): SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ
-#'   Options (metabolites): HMDB, CAS, DTXCID, DTXSID, CID, ChEBI, KEGG
+#'   Options (metabolites): HMDB, CAS, DTXCID, DTXSID, SID, CID, ChEBI, KEGG, Drugbank
 #'
 #' @return Feature list with gene symbols (genes/proteins) or CHEBI IDs
 #'   (metabolites)
@@ -136,6 +136,7 @@ getFeatures <- function(pathway, which = "proteins", org = "hsapiens", returntyp
 #'
 #' @export
 getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SYMBOL") {
+    
     org <- tolower(org)
 
     ## check for the correct organism
@@ -187,6 +188,7 @@ getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SY
     )
 
     return(map)
+    
 }
 
 
@@ -200,14 +202,14 @@ getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SY
 #' mapping table based on \href{https://comptox.epa.gov/dashboard}{Comptox
 #' Dashboard}, \href{https://pubchem.ncbi.nlm.nih.gov/}{PubChem},
 #' \href{https://hmdb.ca/}{HMDB}, and \href{https://www.ebi.ac.uk/chebi}{ChEBI}
-#' is provided with the package.
+#' is provided in the AnnotationHub package metaboliteIDmapping.
 #'
 #' @param features List of identifiers to be mapped.
 #' @param keytype String specifying the ID type, e.g., "ChEBI" or "KEGGCOMP".
 #'
 #' @param returntype String that specifies the returning ID type.
 #'        Default: HMDB
-#'        Options: HMDB, CAS, DTXCID, DTXSID, CID, ChEBI, KEGG
+#'        Options: HMDB, CAS, DTXCID, DTXSID, SID, CID, ChEBI, KEGG, Drugbank
 #'
 #' @return List containing mapped gene/protein IDs.
 #'
@@ -224,10 +226,11 @@ getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SY
 getMetaboliteMapping <- function(features, keytype, returntype = "HMDB") {
 
     ## check for the correct metabolite mapping format
-    supportedIDs <- c("HMDB", "ChEBI", "KEGG", "CAS", "DTXCID", "DTXSID", "CID")
+    supportedIDs <- c("HMDB", "ChEBI", "KEGG", "CAS", "DTXCID",
+                      "DTXSID", "SID", "CID", "Drugbank")
     if (!returntype %in% supportedIDs) {
         stop("Insert one of the following IDs to be returned (returntype):
-              HMDB, CAS, ChEBI, KEGG, CID, DTXCID, DTXSID",
+              HMDB, CAS, ChEBI, KEGG, SID, CID, DTXCID, DTXSID, Drugbank",
             call. = FALSE
         )
     }
@@ -235,10 +238,21 @@ getMetaboliteMapping <- function(features, keytype, returntype = "HMDB") {
     ## run the actual mapping of IDS and return a list of the user-given type
     map <- tryCatch(
         {
-            m <- match(unique(features), metabolitesMapping[[keytype]])
-            m <- m[!is.na(m)]
-            metabolitesMapping[[returntype]][m]
-        },
+            ## find all rows with a given feature and keytype
+            ## extract all unique mappings to a returntype
+            ## i.e., there can be more than one ID that is mapped
+            ## to one input feature
+            m <- lapply( unique( features), function(x){
+                
+                rows <- which( metabolitesMapping[[ keytype]] %in% x)
+                unique( metabolitesMapping[ rows,][[ returntype]])
+                
+                })
+
+            m <- unlist( m)
+            m <- m[ !is.na( m)]
+            
+       },
         error = function(cond) {
             return(list())
         }
@@ -246,11 +260,8 @@ getMetaboliteMapping <- function(features, keytype, returntype = "HMDB") {
 
     map <- map[!is.na(map)]
 
-    if (returntype %in% c("DTXCID", "DTXSID", "HMDB") && length(map) > 0) {
-          map <- paste0(returntype, map)
-      }
-
     return(map)
+    
 }
 
 
@@ -273,7 +284,7 @@ getMetaboliteMapping <- function(features, keytype, returntype = "HMDB") {
 #' @param returnProteome String specifying the returned protein ID format.
 #'   Default: SYMBOL Options: SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ
 #' @param returnMetabolome String specifying the returned metabolite ID format.
-#'   Default: HMDB Options: HMDB, CAS, DTXCID, DTXSID, CID, ChEBI, KEGG
+#'   Default: HMDB Options: HMDB, CAS, DTXCID, DTXSID, SID, CID, ChEBI, KEGG, Drugbank
 #' @param organism String specifying the organism of interest. This has direct
 #'   influence on the available pathway databases. Default: "hsapiens"
 #'   Options: see \code{\link[multiGSEA]{getOrganisms}}
@@ -319,6 +330,7 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
                                   returnMetabolome = "HMDB",
                                   organism = "hsapiens",
                                   useLocal = TRUE) {
+    
     layers <- c("all", "metabolome", "proteome", "transcriptome")
     organism <- tolower(organism)
 
@@ -344,10 +356,11 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
     }
 
     ## check for the correct metabolite mapping format
-    supportedIDs <- c("HMDB", "ChEBI", "KEGG", "CAS", "DTXCID", "DTXSID", "CID")
+    supportedIDs <- c("HMDB", "ChEBI", "KEGG", "CAS", "DTXCID",
+                      "DTXSID", "SID", "CID", "Drugbank")
     if (!returnMetabolome %in% supportedIDs) {
         stop("Insert one of the following IDs to be returned (returnMetabolome):
-              HMDB, CAS, ChEBI, KEGG, CID, DTXCID, DTXSID",
+              HMDB, CAS, ChEBI, KEGG, SID, CID, DTXCID, DTXSID, Drugbank",
             call. = FALSE
         )
     }
@@ -427,6 +440,7 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
     }
 
     return(features)
+    
 }
 
 
@@ -448,6 +462,7 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
 #'
 #' @return List of mapped features for an omics layer.
 getMappedFeatures <- function(pathways, returnID = "SYMBOL", organism = "hsapiens", which = "proteins", useLocal = TRUE) {
+    
     feat <- unlist(lapply(names(pathways), function(db) {
         ap <- archivePath(paste0(organism, "_", db, "_", returnID))
 
@@ -470,6 +485,7 @@ getMappedFeatures <- function(pathways, returnID = "SYMBOL", organism = "hsapien
     }), recursive = FALSE)
 
     return(feat)
+    
 }
 
 
@@ -486,6 +502,7 @@ getMappedFeatures <- function(pathways, returnID = "SYMBOL", organism = "hsapien
 #'
 #' @return List of mapped metabolite IDs.
 mapIDType <- function(features, keytype = "CHEBI", maptype = "ChEBI", returntype = "HMDB") {
+    
     mapped <- c()
     ids <- gsub(paste0(keytype, ":"), "", features[grep(keytype, features)])
     if (returntype != maptype) {
@@ -499,6 +516,7 @@ mapIDType <- function(features, keytype = "CHEBI", maptype = "ChEBI", returntype
     }
 
     return(mapped)
+    
 }
 
 
@@ -517,6 +535,7 @@ mapIDType <- function(features, keytype = "CHEBI", maptype = "ChEBI", returntype
 #' getOrganisms()
 #' @export
 getOrganisms <- function() {
+    
     orglist <- c(
         "hsapiens", "rnorvegicus", "mmusculus", "sscrofa",
         "btaurus", "celegans", "dmelanogaster", "drerio",
@@ -524,6 +543,7 @@ getOrganisms <- function() {
     )
 
     return(orglist)
+    
 }
 
 
@@ -538,6 +558,7 @@ getOrganisms <- function() {
 #'
 #' @return AnnotationDbi database for ID mapping.
 getIDMappingDatabase <- function(organism) {
+    
     map <- c(
         hsapiens = "org.Hs.eg.db", rnorvegicus = "org.Rn.eg.db",
         mmusculus = "org.Mm.eg.db", sscrofa = "org.Ss.eg.db",
@@ -557,6 +578,7 @@ getIDMappingDatabase <- function(organism) {
     }
 
     return(get(pkg, envir = getNamespace(pkg)))
+    
 }
 
 
@@ -578,7 +600,9 @@ getIDMappingDatabase <- function(organism) {
 #' rankFeatures(logFC, pvalues)
 #' @export
 rankFeatures <- function(logFC, pvalues, base = 10) {
+    
     return(sign(logFC) * -log(pvalues, base = base))
+    
 }
 
 
@@ -600,6 +624,7 @@ rankFeatures <- function(logFC, pvalues, base = 10) {
 #' initOmicsDataStructure(c("Transcriptome", "Metabolome"))
 #' @export
 initOmicsDataStructure <- function(layer = c("transcriptome", "proteome", "metabolome")) {
+    
     l <- c()
     layer <- tolower(layer)
     if (length(grep("trans*", layer)) > 0) l <- c(l, "transcriptome")
@@ -617,4 +642,5 @@ initOmicsDataStructure <- function(layer = c("transcriptome", "proteome", "metab
     names(empty_structure) <- l
 
     return(empty_structure)
+
 }
