@@ -16,7 +16,7 @@ rF_meta <- rankFeatures(metabolome$logFC, metabolome$pValue)
 names(rF_meta) <- metabolome$HMDB
 names(rF_meta) <- gsub("HMDB", "HMDB00", names(rF_meta))
 
-data(metabolitesMapping)
+library(metaboliteIDmapping)
 
 test_that("provided data can be ranked", {
     expect_is(rF_trans, "numeric")

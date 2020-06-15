@@ -214,7 +214,7 @@ getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SY
 #' @return List containing mapped gene/protein IDs.
 #'
 #' @examples
-#' data(metabolitesMapping)
+#' library(metaboliteIDmapping)
 #' features <- graphite::nodes(graphite::pathways("hsapiens", "kegg")[[1]], which = "metabolites")
 #' features <- gsub("KEGGCOMP:", "", features)
 #' keytype <- "KEGG"
