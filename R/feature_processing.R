@@ -173,7 +173,7 @@ getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SY
     else {
         col <- unique(c("SYMBOL", "UNIPROT", returntype))
     }
-
+    
     ## run the actual mapping of IDS and return a list of the user-given type
     map <- tryCatch(
         {
@@ -186,7 +186,7 @@ getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SY
             return(list())
         }
     )
-
+    
     return(map)
     
 }
@@ -224,17 +224,17 @@ getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SY
 #' getMetaboliteMapping(features, keytype = "KEGG", returntype = "CID")
 #' @export
 getMetaboliteMapping <- function(features, keytype, returntype = "HMDB") {
-
+    
     ## check for the correct metabolite mapping format
     supportedIDs <- c("HMDB", "ChEBI", "KEGG", "CAS", "DTXCID",
                       "DTXSID", "SID", "CID", "Drugbank")
     if (!returntype %in% supportedIDs) {
         stop("Insert one of the following IDs to be returned (returntype):
               HMDB, CAS, ChEBI, KEGG, SID, CID, DTXCID, DTXSID, Drugbank",
-            call. = FALSE
+             call. = FALSE
         )
     }
-
+    
     ## run the actual mapping of IDS and return a list of the user-given type
     map <- tryCatch(
         {
@@ -247,19 +247,19 @@ getMetaboliteMapping <- function(features, keytype, returntype = "HMDB") {
                 rows <- which( metabolitesMapping[[ keytype]] %in% x)
                 unique( metabolitesMapping[ rows,][[ returntype]])
                 
-                })
-
+            })
+            
             m <- unlist( m)
             m <- m[ !is.na( m)]
             
-       },
+        },
         error = function(cond) {
             return(list())
         }
     )
-
+    
     map <- map[!is.na(map)]
-
+    
     return(map)
     
 }
@@ -333,28 +333,28 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
     
     layers <- c("all", "metabolome", "proteome", "transcriptome")
     organism <- tolower(organism)
-
+    
     returnTranscriptome <- toupper(returnTranscriptome)
     returnProteome <- toupper(returnProteome)
     returnMetabolome <- toupper(returnMetabolome)
-
+    
     ## check for the correct transcriptome mapping format
     supportedIDs <- c("SYMBOL", "ENTREZID", "UNIPROT", "ENSEMBL", "REFSEQ")
     if (!returnTranscriptome %in% supportedIDs) {
         stop("Insert one of the following IDs to be returned (returnTranscriptome):
               SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ",
-            call. = FALSE
+             call. = FALSE
         )
     }
-
+    
     ## check for the correct proteome mapping format
     if (!returnProteome %in% supportedIDs) {
         stop("Insert one of the following IDs to be returned (returnProteome):
               SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ",
-            call. = FALSE
+             call. = FALSE
         )
     }
-
+    
     ## check for the correct metabolite mapping format
     supportedIDs <- c("HMDB", "ChEBI", "KEGG", "CAS", "DTXCID",
                       "DTXSID", "SID", "CID", "Drugbank")

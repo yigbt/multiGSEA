@@ -134,6 +134,7 @@ To run the analysis of this vignette, load the installed version of
 
 ```{r load_multiGSEA_package, results='hide'}
 library( multiGSEA)
+library( magrittr)
 ```
 
 Load the omics data for each layer where an enrichment should be calculated.
