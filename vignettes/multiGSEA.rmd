@@ -28,17 +28,18 @@ derive a composite multi-omics pathway enrichment.
 Pathway definitions can be downloaded from up to eight different pathway
 databases by means of the `graphite` Bioconductor package [@graphite:2018].
 Feature mapping for transcripts and proteins is supported towards Entrez Gene
-IDs, Uniprot, Gene Symbol, RefSeq, and Ensembl IDS.  The mapping is accomplished
+IDs, Uniprot, Gene Symbol, RefSeq, and Ensembl IDs.  The mapping is accomplished
 through the `AnnotationDbi` package [@AnnotationDbi:2019] and currently
 supported for 11 different model organisms including human, mouse, and rat. ID
 conversion of metabolite features to Comptox Dashboard IDs (DTXCID, DTXSID),
-CAS-numbers, Pubchem IDs (CID), HMDB, KEGG, and ChEBI identifiers is accomplished
-through a comprehensive mapping table with nearly 900.000 compounds that is part
-of the package.
+CAS-numbers, Pubchem IDs (CID), HMDB, KEGG, ChEBI, Drugbank IDs, or common
+metabolite names is accomplished through the AnnotationHub package
+`metabliteIDmapping`. This package provides a comprehensive ID mapping for more
+than 1.1 million entries.
 
 This vignette covers a simple example workflow illustrating how the `multiGSEA`
 package works.  The omics data sets that will be used throughout the example
-were originally provided by Quiros _et al._ [@Quiros:2017].  In this publication
+were originally provided by Quiros _et al._ [@Quiros:2017].  In their publication
 the authors analyzed the mitochondrial response to four different toxicants,
 including Actinonin, Diclofenac, FCCB, and Mito-Block (MB), within the
 transcriptome, proteome, and metabolome layer. The transcriptome data can be
@@ -52,14 +53,21 @@ and the non-targeted metabolome raw data can be found in the online supplement.
 
 There are two different ways to install the `multiGSEA` package.
 
-First, the `multiGSEA` package is part of [Bioconductor](https://www.bioconductor.org/). 
-Hence, the best way to install the package is via `BiocManager`. Start R (>=4.0.0) and run the following commands:
+First, the `multiGSEA` package is part of
+[Bioconductor](https://bioconductor.org/packages/devel/bioc/html/multiGSEA.html).
+Hence, the best way to install the package is via `BiocManager`. Start R
+(>=4.0.0) and run the following commands:
 
 ```{r bioconductor, eval=FALSE}
+
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
+# The following initializes usage of Bioc devel
+BiocManager::install(version='devel')
+
 BiocManager::install("multiGSEA")
+
 ```
 
 Alternatively, the `multiGSEA` package is hosted on our github page
@@ -67,8 +75,10 @@ https://github.com/yigbt/multiGSEA and can be installed via the
 `devtools` package:
 
 ```{r devtools, eval=FALSE}
+
 install.packages("devtools")
 devtools::install_github("https://github.com/yigbt/multiGSEA")
+
 ```
 
 Once installed, just load the `multiGSEA` package with:
@@ -105,7 +115,7 @@ library( "org.Hs.eg.db")
 ```
 
 In principle, `multiGSEA` is able to deal with 11 different model organisms.
-A summary of supported organisms, they naming format within `multiGSEA` and
+A summary of supported organisms, their naming format within `multiGSEA` and
 their respective `AnnotationDbi` package is shown in Table
 \@ref(tab:OrganismsTable).
 
@@ -132,7 +142,7 @@ knitr::kable( df, caption = caption)
 To run the analysis of this vignette, load the installed version of
 `multiGSEA`.
 
-```{r load_multiGSEA_package, results='hide'}
+```{r load_multiGSEA_package, results='hide', message=FALSE, warning=FALSE}
 library( multiGSEA)
 library( magrittr)
 ```
@@ -245,7 +255,7 @@ Now we have to select the databases we want to query and the omics
 layer we are interested in before pathway definitions are downloaded
 and features are mapped to the desired format.
 
-```{r calculate_enrichment, results='hide'}
+```{r calculate_enrichment, results='hide', message=FALSE, warning=FALSE}
 
 databases <- c( "kegg", "reactome", "biocarta")
 layers <- names( omics_data)
