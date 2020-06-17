@@ -38,7 +38,7 @@ multiGSEA <- function(pathways, ranks) {
 
     # Go through all omics layer.
     es <- lapply(names(pathways), function(omics) {
-        fgsea(pathways[[omics]], ranks[[omics]], nperm = 1000, minSize = 5)
+        fgsea(pathways[[omics]], ranks[[omics]], minSize = 5)
     })
 
     names(es) <- names(pathways)
