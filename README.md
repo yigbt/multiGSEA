@@ -33,7 +33,7 @@ Features of the metabolome layer can be mapped to:
 
   
 Please note, that the mapping of metabolite IDs is accomplished
-through the `metabolitIDmapping` package.  This `AnnotationHub`
+through the `metaboliteIDmapping` package.  This `AnnotationHub`
 package provides a comprehensive mapping table with more than one
 million compounds.
   
@@ -41,30 +41,34 @@ million compounds.
 # Installation
 
 There are two ways to install the `multiGSEA` package. For both you
-have to install and start R in at least Version 4.0:
+have to install and start R in at least version 4.0:
 
 (i) Use the Bioconductor framework:
 
-  if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
+```R
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
 
-  # The following initializes usage of Bioc devel
-  BiocManager::install(version='devel')
+# The following initializes usage of Bioc devel
+BiocManager::install(version='devel')
 
-  BiocManager::install("multiGSEA")
+BiocManager::install("multiGSEA")
+```
 
 (ii) Alternatively, you can install the most up to date version
 (development) easily with
 [devtools](https://github.com/hadley/devtools):
 
-    install.packages("devtools")
-    devtools::install_github("https://github.com/yigbt/multiGSEA")
-
+```R
+install.packages("devtools")
+devtools::install_github("https://github.com/yigbt/multiGSEA")
+```
 
 Once installed, just load the `multiGSEA` package with:
 
-    library(multiGSEA)
-
+```R
+library(multiGSEA)
+```
 
 
 # Workflow
@@ -80,4 +84,6 @@ typically separated in the following steps:
 5. Calculate the aggregated pathway enrichment.
 
 
-For more information please have a look in the vignette.
+For more information please have a look in the vignette at our
+[Bioconductor
+page](https://bioconductor.org/packages/devel/bioc/vignettes/multiGSEA/inst/doc/multiGSEA.html).
