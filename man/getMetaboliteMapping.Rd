@@ -29,7 +29,6 @@ Dashboard}, \href{https://pubchem.ncbi.nlm.nih.gov/}{PubChem},
 is provided in the AnnotationHub package metaboliteIDmapping.
 }
 \examples{
-library(metaboliteIDmapping)
 features <- graphite::nodes(graphite::pathways("hsapiens", "kegg")[[1]], which = "metabolites")
 features <- gsub("KEGGCOMP:", "", features)
 keytype <- "KEGG"
