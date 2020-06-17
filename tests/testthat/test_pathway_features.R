@@ -1,5 +1,4 @@
 context("Pathways and feature extraction")
-library(metaboliteIDMapping)
 
 test_that("transcriptomic features get mapped", {
     layer <- c("transcriptome")
