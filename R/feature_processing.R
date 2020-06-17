@@ -214,7 +214,6 @@ getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SY
 #' @return List containing mapped gene/protein IDs.
 #'
 #' @examples
-#' library(metaboliteIDmapping)
 #' features <- graphite::nodes(graphite::pathways("hsapiens", "kegg")[[1]], which = "metabolites")
 #' features <- gsub("KEGGCOMP:", "", features)
 #' keytype <- "KEGG"
@@ -229,11 +228,20 @@ getMetaboliteMapping <- function(features, keytype, returntype = "HMDB") {
     supportedIDs <- c("HMDB", "ChEBI", "KEGG", "CAS", "DTXCID",
                       "DTXSID", "SID", "CID", "Drugbank")
     if (!returntype %in% supportedIDs) {
-        stop("Insert one of the following IDs to be returned (returntype):
-              HMDB, CAS, ChEBI, KEGG, SID, CID, DTXCID, DTXSID, Drugbank",
-             call. = FALSE
+        stop( "Insert one of the following IDs to be returned (returntype):
+              HMDB, CAS, ChEBI, KEGG, SID, CID, DTXCID, DTXSID, Drugbank, Name",
+              call. = FALSE
         )
     }
+    
+    ## load the mapping table which is deposited in the 
+    ## metaboliteIDmapping package.
+    if (!requireNamespace( "metaboliteIDmapping", quietly = TRUE)) {
+        stop( "The necessary package metabolieIDmapping is not installed.",
+              call. = FALSE
+        )
+    }
+    
     
     ## run the actual mapping of IDS and return a list of the user-given type
     map <- tryCatch(
