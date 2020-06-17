@@ -252,8 +252,8 @@ getMetaboliteMapping <- function(features, keytype, returntype = "HMDB") {
             ## to one input feature
             m <- lapply( unique( features), function(x){
                 
-                rows <- which( metabolitesMapping[[ keytype]] %in% x)
-                unique( metabolitesMapping[ rows,][[ returntype]])
+                rows <- which( metaboliteIDmapping::metabolitesMapping[[ keytype]] %in% x)
+                unique( metaboliteIDmapping::metabolitesMapping[ rows,][[ returntype]])
                 
             })
             
