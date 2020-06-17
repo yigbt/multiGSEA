@@ -10,7 +10,7 @@ Description: Extracted features from pathways derived from 8 different databases
   (KEGG, Reactome, Biocarta, etc.) can be used on transcriptomic, proteomic, and/or
   metabolomic level to calculate a combined GSEA-based enrichment score.
 License: AGPL-3
-Depends: R (>= 3.6.0)
+Depends: R (>= 4.0.0)
 Imports: 
     magrittr,
     graphite,
