@@ -4,13 +4,15 @@
 \name{proteome}
 \alias{proteome}
 \title{Proteomic data set that is used in the toy example provided by the `multiGSEA` package.}
-\format{A tibble with 4 variables and 8275 measured proteome features:
+\format{
+A tibble with 4 variables and 8275 measured proteome features:
 \describe{
    \item{Symbol}{HGNC symbol of measured proteins.}
    \item{logFC}{Log2-transformed fold change between treatment and control.}
    \item{pValue}{P-value associated with the fold change.}
    \item{adj.pValue}{Adjusted p-value associated with the fold change.}
-}}
+}
+}
 \usage{
 data(proteome)
 }

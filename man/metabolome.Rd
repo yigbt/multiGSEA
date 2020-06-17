@@ -4,13 +4,15 @@
 \name{metabolome}
 \alias{metabolome}
 \title{Metabolomic data set that is used in the toy example provided by the `multiGSEA` package.}
-\format{A tibble with 4 variables and 4881 measured proteome features:
+\format{
+A tibble with 4 variables and 4881 measured proteome features:
 \describe{
    \item{HMDB}{HMDB identifier of measured metabolites.}
    \item{logFC}{Log2-transformed fold change between treatment and control.}
    \item{pValue}{P-value associated with the fold change.}
    \item{adj.pValue}{Adjusted p-value associated with the fold change.}
-}}
+}
+}
 \usage{
 data(metabolome)
 }
