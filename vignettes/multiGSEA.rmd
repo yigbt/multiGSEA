@@ -334,7 +334,8 @@ For displaying reasons, only the adjusted p-values are shown in Table
 \@ref(tab:resultTable).
 
 ```{r resultTable, results='asis', echo=FALSE}
-caption <- "Table summarizing the top 15 pathways. Pathways from KEGG, Reactome,
+caption <- "Table summarizing the top 15 pathways where we can calculate an
+            enrichment for all three layers . Pathways from KEGG, Reactome,
             and BioCarta are listed based on their aggregated adjusted p-value. 
             Corrected p-values are displayed for each omics layer separately and 
             aggregated by means of the Stouffer's Z-method."
@@ -342,7 +343,8 @@ caption <- "Table summarizing the top 15 pathways. Pathways from KEGG, Reactome,
 knitr::kable( 
     df %>% 
     dplyr::arrange( combined_padj) %>% 
-    dplyr::select( c( transcriptome_padj, proteome_padj, metabolome_padj, combined_padj)) %>% 
+    dplyr::filter( !is.na(metabolome_padj) ) %>%
+    dplyr::select( c( pathway, transcriptome_padj, proteome_padj, metabolome_padj, combined_pval)) %>% 
     dplyr::slice( 1:15),
     caption = caption
 )
