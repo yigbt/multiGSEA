@@ -31,14 +31,14 @@
 #'
 #' ## run the enrichment
 #' multiGSEA(pathways, ranks)
-#' @importFrom fgsea fgsea
+#' @importFrom fgsea fgseaMultilevel
 #'
 #' @export
 multiGSEA <- function(pathways, ranks) {
 
     # Go through all omics layer.
     es <- lapply(names(pathways), function(omics) {
-        fgsea(pathways[[omics]], ranks[[omics]], nperm = 1000, minSize = 5)
+        fgseaMultilevel(pathways[[omics]], ranks[[omics]], eps = 0)
     })
 
     names(es) <- names(pathways)
@@ -153,7 +153,7 @@ combinePvalues <- function(df, method = "stouffer", weights = NULL) {
         )
     }
 
-    cols <- grep("pval", colnames(df))
+    cols <- grep("padj", colnames(df))
 
     pvals <- apply(df, 1, function(row) {
         row <- row[cols]
