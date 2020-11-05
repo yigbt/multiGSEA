@@ -89,7 +89,7 @@ extractPvalues <- function(enrichmentScores, pathwayNames) {
     res <- lapply(pathwayNames, function(name) {
 
         # Go through all the possible omics layer
-        unlist(lapply(names(enrichmentScores), function(y) {
+        unlist( lapply(names(enrichmentScores), function(y) {
             df <- enrichmentScores[[y]][which(enrichmentScores[[y]]$pathway == name), c(2, 3)]
             if (nrow(df) == 0) {
                 df <- data.frame(pval = NA, padj = NA)

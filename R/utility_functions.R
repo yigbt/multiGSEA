@@ -68,3 +68,32 @@ loadLocal <- function(filename) {
     }
     
 }
+
+
+#' Make a list of strings unique
+#' 
+#' It might happen that there are duplicated strings in a list. With this
+#' function we will rename those duplicated entries in a way that we simply add
+#' the number of occurrences to the string. I.e., when the string foo occurs
+#' three times in a list, it will be renamed to foo_1, foo_2, and foo_3,
+#' respectively.
+#' 
+#' @param names List of strings where duplicates should be renamed
+#' 
+#' @return List where duplicates are renamed.
+#' 
+#' @examples
+#' l <- c( "foo", "bar", "foo", "bars")
+#' rename_duplicates( l)
+#' 
+#' @export 
+rename_duplicates <- function( names){
+    
+    tn <- table( names)
+    for(name in names( tn[tn>1])){
+        names[ names == name] <- paste0( name, "_", 1:tn[ names( tn) == name])
+    }
+    
+    return( names)
+}
+
