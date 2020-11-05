@@ -263,7 +263,8 @@ layers <- names( omics_data)
 pathways <- getMultiOmicsFeatures( dbs = databases, layer = layers,
                                    returnTranscriptome = "SYMBOL",
                                    returnProteome = "SYMBOL",
-                                   returnMetabolome = "HMDB")
+                                   returnMetabolome = "HMDB",
+                                   useLocal = FALSE)
 ```
 
 The first two pathway definitions of each omics layer are shown below:
