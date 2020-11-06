@@ -49,9 +49,6 @@ have to install and start R in at least version 4.0:
 if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 
-# The following initializes usage of Bioc devel
-BiocManager::install(version='devel')
-
 BiocManager::install("multiGSEA")
 ```
 
@@ -86,7 +83,7 @@ typically separated in the following steps:
 
 For more information please have a look in the vignette at our
 [Bioconductor
-page](https://bioconductor.org/packages/devel/bioc/vignettes/multiGSEA/inst/doc/multiGSEA.html).
+page](https://bioconductor.org/packages/release/bioc/vignettes/multiGSEA/inst/doc/multiGSEA.html).
 
 
 # LICENSE
