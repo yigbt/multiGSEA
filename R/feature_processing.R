@@ -421,6 +421,10 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
             returnID = returnTranscriptome,
             useLocal = useLocal
         )
+        
+        ## adapt for duplicated pathways
+        names( features$transcriptome) <- rename_duplicates( names( features$transcriptome))
+                                                                    
     }
 
     if ("proteome" %in% layer) {
@@ -433,6 +437,10 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
                 returnID = returnProteome,
                 useLocal = useLocal
             )
+            
+            ## adapt for duplicated pathways
+            names( features$proteome) <- rename_duplicates( names( features$proteome))
+            
         }
     }
 
@@ -445,6 +453,10 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
             which = "metabolites",
             useLocal = useLocal
         )
+        
+        ## adapt for duplicated pathways
+        names( features$metabolome) <- rename_duplicates( names( features$metabolome))
+        
     }
 
     return(features)
