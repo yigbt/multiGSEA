@@ -192,7 +192,6 @@ getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SY
 }
 
 
-
 #' Mapping between pathway encoded metabolites and different metabolite ID
 #' formats.
 #'
@@ -221,55 +220,57 @@ getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SY
 #' getMetaboliteMapping(features, keytype)
 #'
 #' getMetaboliteMapping(features, keytype = "KEGG", returntype = "CID")
+#' 
+#' @importFrom dplyr pull select filter distinct
+#' 
 #' @export
-getMetaboliteMapping <- function(features, keytype, returntype = "HMDB") {
-    
-    ## check for the correct metabolite mapping format
-    supportedIDs <- c("HMDB", "ChEBI", "KEGG", "CAS", "DTXCID",
-                      "DTXSID", "SID", "CID", "Drugbank")
-    if (!returntype %in% supportedIDs) {
-        stop( "Insert one of the following IDs to be returned (returntype):
+getMetaboliteMapping <- function( features, keytype, returntype = "HMDB") {
+  
+  ## check for the correct metabolite mapping format
+  supportedIDs <- c("HMDB", "ChEBI", "KEGG", "CAS", "DTXCID",
+                    "DTXSID", "SID", "CID", "Drugbank")
+  if (!returntype %in% supportedIDs) {
+    stop( "Insert one of the following IDs to be returned (returntype):
               HMDB, CAS, ChEBI, KEGG, SID, CID, DTXCID, DTXSID, Drugbank, Name",
-              call. = FALSE
-        )
-    }
-    
-    ## load the mapping table which is deposited in the 
-    ## metaboliteIDmapping package.
-    if (!requireNamespace( "metaboliteIDmapping", quietly = TRUE)) {
-        stop( "The necessary package metabolieIDmapping is not installed.",
-              call. = FALSE
-        )
-    }
-    
-    
-    ## run the actual mapping of IDS and return a list of the user-given type
-    map <- tryCatch(
-        {
-            ## find all rows with a given feature and keytype
-            ## extract all unique mappings to a returntype
-            ## i.e., there can be more than one ID that is mapped
-            ## to one input feature
-            m <- lapply( unique( features), function(x){
-                
-                rows <- which( metaboliteIDmapping::metabolitesMapping[[ keytype]] %in% x)
-                unique( metaboliteIDmapping::metabolitesMapping[ rows,][[ returntype]])
-                
-            })
-            
-            m <- unlist( m)
-            m <- m[ !is.na( m)]
-            
-        },
-        error = function(cond) {
-            return(list())
-        }
+          call. = FALSE
     )
-    
-    map <- map[!is.na(map)]
-    
-    return(map)
-    
+  }
+  
+  ## load the mapping table which is deposited in the
+  ## metaboliteIDmapping package.
+  if (!requireNamespace( "metaboliteIDmapping", quietly = TRUE)) {
+    stop( "The necessary package metabolieIDmapping is not installed.",
+          call. = FALSE
+          )
+  }
+  
+  
+  ## run the actual mapping of IDS and return a list of the user-given type
+  map <- tryCatch(
+    {
+      
+      ## to speed up the mapping, we need to subest the whole
+      ## metabolitesIDmapping table in the first place to contain
+      ## only thoses entries that match the given feature list
+      SUBmappingTable <- metabolitesMapping %>%
+        dplyr::select( !!as.name( keytype), !!as.name( returntype)) %>%
+        dplyr::filter( !!as.name( keytype) %in% unique( features)) %>%
+        dplyr::distinct()
+      colnames( SUBmappingTable) <- c("Original", "Mapped")
+   
+      SUBmappingTable %>% pull( Mapped)
+      
+    },
+    error = function(cond) {
+      return(
+        rep( "NA", length( features))
+      )
+    }
+  )
+  
+  map <- map[ !is.na(map)] 
+  return(map)
+  
 }
 
 

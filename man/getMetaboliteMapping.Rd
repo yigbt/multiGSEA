@@ -36,4 +36,5 @@ keytype <- "KEGG"
 getMetaboliteMapping(features, keytype)
 
 getMetaboliteMapping(features, keytype = "KEGG", returntype = "CID")
+
 }
