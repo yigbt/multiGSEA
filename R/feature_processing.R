@@ -177,7 +177,8 @@ getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SY
     ## run the actual mapping of IDS and return a list of the user-given type
     map <- tryCatch(
         {
-            map <- select(db, keys = features, columns = col, keytype = keytype)
+            map <- AnnotationDbi::select(db, keys = features,
+	                                 columns = col, keytype = keytype)
             m <- match(unique(map[[keytype]]), map[[keytype]])
             map <- map[m, ]
             map[[returntype]][!is.na(map[[returntype]])]
