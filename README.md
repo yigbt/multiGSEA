@@ -1,5 +1,13 @@
 # The `multiGSEA` `R` package
 
+## Authors
+
+Sebastian Canzler and Jörg Hackermüller
+
+[multiGSEA: a GSEA-based pathway enrichment analysis for multi-omics data](https://doi.org/10.1186/s12859-020-03910-x), _BMC Bioinformatics_ 21, 561 (2020)
+
+## Introduction
+
 The `multiGSEA` package was designed to run a robust GSEA-based
 pathway enrichment for multiple omics layers. The enrichment is
 calculated for each omics layer separately and aggregated p-values are
@@ -35,10 +43,12 @@ Features of the metabolome layer can be mapped to:
 Please note, that the mapping of metabolite IDs is accomplished
 through the `metaboliteIDmapping` package.  This `AnnotationHub`
 package provides a comprehensive mapping table with more than one
-million compounds.
+million compounds (`metaboliteIDmapping` on our [github
+page](https://github.com/yigbt/metaboliteIDmapping) or at
+[Bioconductor](http://bioconductor.org/packages/metaboliteIDmapping/)).
   
   
-# Installation
+## Installation
 
 There are two ways to install the `multiGSEA` package. For both you
 have to install and start R in at least version 4.0:

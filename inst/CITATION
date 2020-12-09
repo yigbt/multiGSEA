@@ -1,17 +1,16 @@
 citHeader("To cite multiGSEA in publications use:")
 
 citEntry(
-  entry        = "manual",
+  entry        = "article",
   title        = "{multiGSEA}: {A GSEA}-based pathway enrichment analysis for multi-omics data",
   author       = c( person( "Canzler", "Sebastian"),
                     person( "Jörg", "Hackermüller")),
   year         = "2020",
+  journal      = "BMC Bioinformatics",
+  doi          = "https://doi.org/10.1186/s12859-020-03910-x",
+  volume       = 21,
   organization = "Helmholtz-Centre for Environmental Research - UFZ",
-  address      = "Leipzig, Germany",
-  note         = "version 0.99.0",
-  url          = "https://github.com/yigbt/multiGSEA",
-  textVersion  = paste( "Canzler, S and Hackermüller, J (2020).",
+  textVersion  = paste( "Canzler, Sebastian and Hackermüller, Jörg: ",
       "multiGSEA: A GSEA-based pathway enrichment analysis for multi-omics data.",
-      "Version 0.99.0. Helmholtz-Centre for Environmental Research - UFZ, Leipzig, Germany.",
-      "https://github.com/yigbt/multiGSEA")
+      "BMC Bioinformatics 21, 561 (2020). https://doi.org/10.1186/s12859-020-03910-x")
 )
