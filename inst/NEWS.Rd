@@ -44,3 +44,12 @@
   \item Add the correct citation of the BMC Bioinformatics article.
 
 }}
+
+\section{ Changes in version 1.1.5 (2021-04-19)}{
+
+\itemize{
+
+  \item Typos fixed.
+  \item Add information and reference about metrics to calculate the feature ranks.
+
+}}
