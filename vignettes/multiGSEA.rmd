@@ -213,6 +213,11 @@ significance:
 \end{equation}
 
 
+Please note, that any other rank metric will work as well and the
+choice on which one to chose is up to the user. However, as it was
+shown by Zyla _et al._ [@Zyla:2017], the choice of the applied metric
+might have a big impact on the outcome of your analysis.
+
 ```{r rank_features, results='hide'}
 
 # create data structure
