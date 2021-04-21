@@ -117,7 +117,7 @@ library( "org.Hs.eg.db")
 In principle, `multiGSEA` is able to deal with 11 different model organisms.
 A summary of supported organisms, their naming format within `multiGSEA` and
 their respective `AnnotationDbi` package is shown in Table
-\@ref(tab:OrganismsTable).
+\@ref(tab:organismsTable).
 
 ```{r organismsTable, results='asis', echo=FALSE}
 caption <- "Supported organisms, their abbreviations being used in `multiGSEA`,
