@@ -237,7 +237,7 @@ getMetaboliteMapping <- function(features, keytype, returntype = "HMDB") {
     ## load the mapping table which is deposited in the 
     ## metaboliteIDmapping package.
     if (!requireNamespace( "metaboliteIDmapping", quietly = TRUE)) {
-        stop( "The necessary package metabolieIDmapping is not installed.",
+        stop( "The necessary package metaboliteIDmapping is not installed.",
               call. = FALSE
         )
     }
