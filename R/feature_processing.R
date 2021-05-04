@@ -33,7 +33,7 @@
 #'
 #' @export
 getFeatures <- function(pathway, which = "proteins", org = "hsapiens", returntype = "SYMBOL") {
-    
+
     if (which != "proteins" && which != "metabolites") {
         stop("Only 'proteins' and 'metabolites' are supported for 'which'.",
             call. = FALSE
@@ -44,7 +44,7 @@ getFeatures <- function(pathway, which = "proteins", org = "hsapiens", returntyp
 
     ## check for the correct organism
     if (!(org %in% getOrganisms())) {
-        stop("Please insert a correct organism name! Use getOrganisms() 
+        stop("Please insert a correct organism name! Use getOrganisms()
               to see all supported organisms.",
             call. = FALSE
         )
@@ -136,7 +136,7 @@ getFeatures <- function(pathway, which = "proteins", org = "hsapiens", returntyp
 #'
 #' @export
 getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SYMBOL") {
-    
+
     org <- tolower(org)
 
     ## check for the correct organism
@@ -151,7 +151,7 @@ getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SY
 
     supportedIDs <- c("SYMBOL", "ENTREZID", "UNIPROT", "ENSEMBL", "REFSEQ")
     if (org != "dmelanogaster" && !returntype %in% supportedIDs) {
-        stop("Insert one of the following IDs to be returned (returntype): 
+        stop("Insert one of the following IDs to be returned (returntype):
               SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ.",
             call. = FALSE
         )
@@ -159,7 +159,7 @@ getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SY
 
     supportedIDs <- c(supportedIDs, "FLYBASE", "FLYBASECG")
     if (org == "dmelanogaster" && !returntype %in% supportedIDs) {
-        stop("Insert one of the following IDs to be returned (returntype): 
+        stop("Insert one of the following IDs to be returned (returntype):
               SYMBOL, ENTREZID, UNIPROT, ENSEMBL, REFSEQ, FLYBASE, FLYBASECG.",
             call. = FALSE
         )
@@ -173,7 +173,7 @@ getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SY
     else {
         col <- unique(c("SYMBOL", "UNIPROT", returntype))
     }
-    
+
     ## run the actual mapping of IDS and return a list of the user-given type
     map <- tryCatch(
         {
@@ -187,9 +187,9 @@ getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SY
             return(list())
         }
     )
-    
+
     return(map)
-    
+
 }
 
 
@@ -221,12 +221,12 @@ getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SY
 #' getMetaboliteMapping(features, keytype)
 #'
 #' getMetaboliteMapping(features, keytype = "KEGG", returntype = "CID")
-#' 
+#'
 #' @importFrom dplyr pull select filter distinct
-#' 
+#'
 #' @export
 getMetaboliteMapping <- function( features, keytype, returntype = "HMDB") {
-  
+
   ## check for the correct metabolite mapping format
   supportedIDs <- c("HMDB", "ChEBI", "KEGG", "CAS", "DTXCID",
                     "DTXSID", "SID", "CID", "Drugbank")
@@ -236,7 +236,7 @@ getMetaboliteMapping <- function( features, keytype, returntype = "HMDB") {
           call. = FALSE
     )
   }
-  
+
   ## load the mapping table which is deposited in the
   ## metaboliteIDmapping package.
   if (!requireNamespace( "metaboliteIDmapping", quietly = TRUE)) {
@@ -244,23 +244,23 @@ getMetaboliteMapping <- function( features, keytype, returntype = "HMDB") {
           call. = FALSE
           )
   }
-  
-  
+
+
   ## run the actual mapping of IDS and return a list of the user-given type
   map <- tryCatch(
     {
-      
+
       ## to speed up the mapping, we need to subest the whole
       ## metabolitesIDmapping table in the first place to contain
       ## only thoses entries that match the given feature list
-      SUBmappingTable <- metabolitesMapping %>%
+      SUBmappingTable <- metaboliteIDmapping::metabolitesMapping %>%
         dplyr::select( !!as.name( keytype), !!as.name( returntype)) %>%
         dplyr::filter( !!as.name( keytype) %in% unique( features)) %>%
         dplyr::distinct()
       colnames( SUBmappingTable) <- c("Original", "Mapped")
-   
+
       SUBmappingTable %>% pull( Mapped)
-      
+
     },
     error = function(cond) {
       return(
@@ -268,10 +268,10 @@ getMetaboliteMapping <- function( features, keytype, returntype = "HMDB") {
       )
     }
   )
-  
-  map <- map[ !is.na(map)] 
+
+  map <- map[ !is.na(map)]
   return(map)
-  
+
 }
 
 
@@ -340,14 +340,14 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
                                   returnMetabolome = "HMDB",
                                   organism = "hsapiens",
                                   useLocal = TRUE) {
-    
+
     layers <- c("all", "metabolome", "proteome", "transcriptome")
     organism <- tolower(organism)
-    
+
     returnTranscriptome <- toupper(returnTranscriptome)
     returnProteome <- toupper(returnProteome)
     returnMetabolome <- toupper(returnMetabolome)
-    
+
     ## check for the correct transcriptome mapping format
     supportedIDs <- c("SYMBOL", "ENTREZID", "UNIPROT", "ENSEMBL", "REFSEQ")
     if (!returnTranscriptome %in% supportedIDs) {
@@ -356,7 +356,7 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
              call. = FALSE
         )
     }
-    
+
     ## check for the correct proteome mapping format
     if (!returnProteome %in% supportedIDs) {
         stop("Insert one of the following IDs to be returned (returnProteome):
@@ -364,7 +364,7 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
              call. = FALSE
         )
     }
-    
+
     ## check for the correct metabolite mapping format
     supportedIDs <- c("HMDB", "ChEBI", "KEGG", "CAS", "DTXCID",
                       "DTXSID", "SID", "CID", "Drugbank")
@@ -377,7 +377,7 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
 
     ## check if the given organism is supported
     if (!(organism %in% getOrganisms())) {
-        stop("You entered an organism that is not supported! 
+        stop("You entered an organism that is not supported!
               Use getOrganisms() to get a list of all suported organisms.",
             call. = FALSE
         )
@@ -398,7 +398,7 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
 
     if (sum(tolower(dbs) %in% databases) != length(dbs)) {
         stop("You entered wrong input for the omics layer specification.
-              Options are: all, kegg, pathbank, reactome, biocarta, nci, panther, 
+              Options are: all, kegg, pathbank, reactome, biocarta, nci, panther,
               smpdb, pharmgkb, or a combination thereof.",
             call. = FALSE
         )
@@ -423,10 +423,10 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
             returnID = returnTranscriptome,
             useLocal = useLocal
         )
-        
+
         ## adapt for duplicated pathways
         names( features$transcriptome) <- rename_duplicates( names( features$transcriptome))
-                                                                    
+
     }
 
     if ("proteome" %in% layer) {
@@ -439,10 +439,10 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
                 returnID = returnProteome,
                 useLocal = useLocal
             )
-            
+
             ## adapt for duplicated pathways
             names( features$proteome) <- rename_duplicates( names( features$proteome))
-            
+
         }
     }
 
@@ -455,14 +455,14 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
             which = "metabolites",
             useLocal = useLocal
         )
-        
+
         ## adapt for duplicated pathways
         names( features$metabolome) <- rename_duplicates( names( features$metabolome))
-        
+
     }
 
     return(features)
-    
+
 }
 
 
@@ -484,7 +484,7 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
 #'
 #' @return List of mapped features for an omics layer.
 getMappedFeatures <- function(pathways, returnID = "SYMBOL", organism = "hsapiens", which = "proteins", useLocal = TRUE) {
-    
+
     feat <- unlist(lapply(names(pathways), function(db) {
         ap <- archivePath(paste0(organism, "_", db, "_", returnID))
 
@@ -507,7 +507,7 @@ getMappedFeatures <- function(pathways, returnID = "SYMBOL", organism = "hsapien
     }), recursive = FALSE)
 
     return(feat)
-    
+
 }
 
 
@@ -524,7 +524,7 @@ getMappedFeatures <- function(pathways, returnID = "SYMBOL", organism = "hsapien
 #'
 #' @return List of mapped metabolite IDs.
 mapIDType <- function(features, keytype = "CHEBI", maptype = "ChEBI", returntype = "HMDB") {
-    
+
     mapped <- c()
     ids <- gsub(paste0(keytype, ":"), "", features[grep(keytype, features)])
     if (returntype != maptype) {
@@ -538,7 +538,7 @@ mapIDType <- function(features, keytype = "CHEBI", maptype = "ChEBI", returntype
     }
 
     return(mapped)
-    
+
 }
 
 
@@ -557,7 +557,7 @@ mapIDType <- function(features, keytype = "CHEBI", maptype = "ChEBI", returntype
 #' getOrganisms()
 #' @export
 getOrganisms <- function() {
-    
+
     orglist <- c(
         "hsapiens", "rnorvegicus", "mmusculus", "sscrofa",
         "btaurus", "celegans", "dmelanogaster", "drerio",
@@ -565,7 +565,7 @@ getOrganisms <- function() {
     )
 
     return(orglist)
-    
+
 }
 
 
@@ -580,7 +580,7 @@ getOrganisms <- function() {
 #'
 #' @return AnnotationDbi database for ID mapping.
 getIDMappingDatabase <- function(organism) {
-    
+
     map <- c(
         hsapiens = "org.Hs.eg.db", rnorvegicus = "org.Rn.eg.db",
         mmusculus = "org.Mm.eg.db", sscrofa = "org.Ss.eg.db",
@@ -600,7 +600,7 @@ getIDMappingDatabase <- function(organism) {
     }
 
     return(get(pkg, envir = getNamespace(pkg)))
-    
+
 }
 
 
@@ -622,9 +622,9 @@ getIDMappingDatabase <- function(organism) {
 #' rankFeatures(logFC, pvalues)
 #' @export
 rankFeatures <- function(logFC, pvalues, base = 10) {
-    
+
     return(sign(logFC) * -log(pvalues, base = base))
-    
+
 }
 
 
@@ -646,7 +646,7 @@ rankFeatures <- function(logFC, pvalues, base = 10) {
 #' initOmicsDataStructure(c("Transcriptome", "Metabolome"))
 #' @export
 initOmicsDataStructure <- function(layer = c("transcriptome", "proteome", "metabolome")) {
-    
+
     l <- c()
     layer <- tolower(layer)
     if (length(grep("trans*", layer)) > 0) l <- c(l, "transcriptome")
@@ -654,7 +654,7 @@ initOmicsDataStructure <- function(layer = c("transcriptome", "proteome", "metab
     if (length(grep("metabo*", layer)) > 0) l <- c(l, "metabolome")
 
     if (length(l) != length(layer)) {
-        stop("Not all your omics layer could be mapped to 
+        stop("Not all your omics layer could be mapped to
               'transcriptome', 'proteome', or 'metabolome'. ",
             call. = TRUE
         )
