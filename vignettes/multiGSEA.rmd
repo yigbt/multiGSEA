@@ -262,7 +262,7 @@ and features are mapped to the desired format.
 
 ```{r calculate_enrichment, results='hide', message=FALSE, warning=FALSE}
 
-databases <- c( "kegg", "reactome", "biocarta")
+databases <- c( "kegg", "reactome")
 layers <- names( omics_data)
 
 pathways <- getMultiOmicsFeatures( dbs = databases, layer = layers,

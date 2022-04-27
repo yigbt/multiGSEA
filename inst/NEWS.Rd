@@ -53,3 +53,12 @@
   \item Add information and reference about metrics to calculate the feature ranks.
 
 }}
+
+\section{ Changes in version 1.1.7 (2021-05-10)}{
+
+\itemize{
+
+  \item Remove Biocarta database from vignette - it's no longer supported by graphite R package.
+  \item List all available databases in error message.
+
+}}

@@ -397,10 +397,9 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
     databases <- c("all", as.vector(dbs0))
 
     if (sum(tolower(dbs) %in% databases) != length(dbs)) {
-        stop("You entered wrong input for the omics layer specification.
-              Options are: all, kegg, pathbank, reactome, biocarta, nci, panther,
-              smpdb, pharmgkb, or a combination thereof.",
-            call. = FALSE
+        stop( paste0( "You entered wrong input for the omics layer specification.
+              Options are: ", paste( databases, collapse = ' '), " or a combination thereof."),
+              call. = FALSE
         )
     }
 
