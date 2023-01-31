@@ -255,13 +255,13 @@ getMetaboliteMapping <- function( features, keytype, returntype = "HMDB") {
       ## to speed up the mapping, we need to subest the whole
       ## metabolitesIDmapping table in the first place to contain
       ## only thoses entries that match the given feature list
-      SUBmappingTable <- metabolitesMapping %>%
-        select( !!as.name( keytype), !!as.name( returntype)) %>%
-        filter( !!as.name( keytype) %in% unique( features)) %>%
-        distinct()
+      SUBmappingTable <- metaboliteIDmapping::metabolitesMapping %>%
+        dplyr::select( !!as.name( keytype), !!as.name( returntype)) %>%
+        dplyr::filter( !!as.name( keytype) %in% unique( features)) %>%
+        dplyr::distinct()
       colnames( SUBmappingTable) <- c("Original", "Mapped")
 
-      SUBmappingTable %>% pull( Mapped)
+      SUBmappingTable %>% dplyr::pull( Mapped)
 
     },
     error = function(cond) {
