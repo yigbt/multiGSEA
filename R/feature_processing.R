@@ -392,10 +392,10 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
         )
     }
 
-    pDBs <- pathwayDatabases()
+    pDBs <- graphite::pathwayDatabases()
     dbs0 <- pDBs %>%
-        filter(.data$species == organism) %>%
-        pull(.data$database)
+        dplyr::filter(.data$species == organism) %>%
+        dplyr::pull(.data$database)
     databases <- c("all", as.vector(dbs0))
 
     if (sum(tolower(dbs) %in% databases) != length(dbs)) {

@@ -29,7 +29,7 @@ archivePath <- function(filename) {
 #' @importFrom rappdirs user_cache_dir
 archiveDir <- function() {
     
-    ad <- user_cache_dir("multiGSEA")
+    ad <- rappdirs::user_cache_dir("multiGSEA")
 
     if (!file.exists(ad)) {
         if (!dir.create(ad, FALSE, TRUE)) {
