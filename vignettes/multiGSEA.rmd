@@ -356,6 +356,34 @@ knitr::kable(
 )
 ```
 
+# Customizable gene sets
+
+In principle, `multiGSEA` can also be run as single/multi omics analysis on
+custom gene sets.
+
+The `pathways` object storing the pathway features across multiple omics layers
+is a nested list, and hence can be designed manually to fit ones purposes.
+
+In the following example, HALLMARK gene sets are retrieved from `MSigDB` and
+used to create a transcriptomics input list:
+
+```{r msigdbr, eval=FALSE}
+
+library(msigdbr)
+library(dplyr)
+
+hallmark <- msigdbr(species = "Rattus norvegicus", category = "H") %>%
+  dplyr::select( gs_name, ensembl_gene) %>%
+  dplyr::filter( !is.na(ensembl_gene)) %>%
+  unstack( ensembl_gene ~ gs_name)
+
+pathways <- list( "transcriptome" = hallmark)
+
+```
+
+**Please note**, feature sets across multiple omics layers have to be in the
+same order and their names have to be identical, see the example presented above.
+
 
 # Session Information
 
