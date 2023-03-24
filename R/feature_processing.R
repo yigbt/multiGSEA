@@ -51,7 +51,7 @@ getFeatures <- function(pathway, which = "proteins", org = "hsapiens", returntyp
     }
 
     ## extract the features (genes/proteins or metabolites) from the pathway nodes.
-    features <- nodes(pathway, which = which)
+    features <- graphite::nodes(pathway, which = which)
 
     if (length(features) == 0) {
         return(list())
@@ -88,7 +88,17 @@ getFeatures <- function(pathway, which = "proteins", org = "hsapiens", returntyp
             maptype = "CID", returntype = returntype
         )
 
-        mapped <- c(chebi, kegg, pubchem)
+        cas <- mapIDType(
+          features = features, keytype = "CAS",
+          maptype = "CAS", returntype = returntype
+        )
+        
+        hmdb <- mapIDType(
+          features = features, keytype = "HMDB",
+          maptype = "HMDB", returntype = returntype
+        )
+
+        mapped <- c(chebi, kegg, pubchem, cas, hmdb)
     }
 
     return(mapped)
@@ -412,7 +422,7 @@ getMultiOmicsFeatures <- function(dbs = c("all"), layer = c("all"),
       }
 
     pathways <- lapply(dbs, function(x) {
-        pathways(organism, x)
+        graphite::pathways(organism, x)
     })
     names(pathways) <- dbs
 
@@ -513,29 +523,20 @@ getMappedFeatures <- function(pathways, returnID = "SYMBOL", organism = "hsapien
 
 
 
-#' Helper function to map only a subset of metabolite IDs
-#'
-#' This helper function becomes necessary since there are sometimes multiple ID
-#' formats used in a single pathway definition.
-#'
-#' @param features List of metabolite feature IDs of the pathway.
-#' @param keytype String specifying the ID format in pathway definition.
-#' @param maptype String specifying the corresponding ID format in multiGSEA.
-#' @param returntype String identifying the ID type that should be mapped.
-#'
-#' @return List of mapped metabolite IDs.
+
 mapIDType <- function(features, keytype = "CHEBI", maptype = "ChEBI", returntype = "HMDB") {
 
     mapped <- c()
     ids <- gsub(paste0(keytype, ":"), "", features[grep(keytype, features)])
+
     if (returntype != maptype) {
-        mapped <- c(mapped, getMetaboliteMapping(
+        mapped <- getMetaboliteMapping(
             features = ids,
             keytype = maptype,
             returntype = returntype
-        ))
+        )
     } else {
-        mapped <- c(mapped, ids)
+        mapped <- ids
     }
 
     return(mapped)
@@ -666,4 +667,32 @@ initOmicsDataStructure <- function(layer = c("transcriptome", "proteome", "metab
 
     return(empty_structure)
 
+}
+
+
+
+#' Helper function to get all different metabolite ID formats
+#'
+#' This helper function extracts all used ID formats in all pathways 
+#' and returns a nested list for each pathway database.
+#'
+#' @param pathways List of pathway databases and their pathway definition.
+#'
+#' @return List of metabolite ID formats.
+getMetaboliteIDformats <- function(pathways){
+  
+  n1 <- lapply(names(pathways), function( dbs){
+    
+    n2 <- lapply(pathways[[dbs]], function(p){
+      
+      unique(gsub( ":.*", "", graphite::nodes(p, which = "metabolites")))
+      
+      })
+    
+    unique(unlist(n2))
+
+  })
+  
+  names(n1) <- names(pathways)
+  return(n1)
 }
