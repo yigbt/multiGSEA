@@ -4,7 +4,7 @@
 \alias{multiGSEA}
 \title{Calculate pathway enrichment for multiple omics layer.}
 \usage{
-multiGSEA(pathways, ranks)
+multiGSEA(pathways, ranks, eps = 0)
 }
 \arguments{
 \item{pathways}{Nested list containing all pathway features for the
@@ -12,6 +12,8 @@ respective omics layer.}
 
 \item{ranks}{Nested list containing the measured and pre-ranked features for
 each omics layer.}
+
+\item{eps}{This parameter sets the boundary for calculating the p value.}
 }
 \value{
 Nested list containing the enrichment scores for each given pathway

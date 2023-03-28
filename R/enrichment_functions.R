@@ -11,6 +11,7 @@
 #'   respective omics layer.
 #' @param ranks Nested list containing the measured and pre-ranked features for
 #'   each omics layer.
+#' @param eps This parameter sets the boundary for calculating the p value.
 #'
 #' @return Nested list containing the enrichment scores for each given pathway
 #'   and omics layer.
@@ -34,11 +35,11 @@
 #' @importFrom fgsea fgseaMultilevel
 #'
 #' @export
-multiGSEA <- function(pathways, ranks) {
+multiGSEA <- function(pathways, ranks, eps = 0) {
 
     # Go through all omics layer.
     es <- lapply(names(pathways), function(omics) {
-        fgsea::fgseaMultilevel(pathways[[omics]], ranks[[omics]], eps = 0)
+        fgsea::fgseaMultilevel(pathways[[omics]], ranks[[omics]], eps = eps)
     })
 
     names(es) <- names(pathways)
