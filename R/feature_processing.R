@@ -232,7 +232,7 @@ getGeneMapping <- function(features, keytype, org = "hsapiens", returntype = "SY
 #'
 #' getMetaboliteMapping(features, keytype = "KEGG", returntype = "CID")
 #'
-#' @importFrom dplyr pull select filter distinct
+#' @importFrom dplyr pull filter distinct
 #' @importFrom metaboliteIDmapping metabolitesMapping
 #' @importFrom magrittr %>%
 #'
@@ -523,7 +523,17 @@ getMappedFeatures <- function(pathways, returnID = "SYMBOL", organism = "hsapien
 
 
 
-
+#' Helper function to map only a subset of metabolite IDs
+#'
+#' This helper function becomes necessary since there are sometimes multiple ID
+#' formats used in a single pathway definition.
+#'
+#' @param features List of metabolite feature IDs of the pathway.
+#' @param keytype String specifying the ID format in pathway definition.
+#' @param maptype String specifying the corresponding ID format in multiGSEA.
+#' @param returntype String identifying the ID type that should be mapped.
+#'
+#' @return List of mapped metabolite IDs.
 mapIDType <- function(features, keytype = "CHEBI", maptype = "ChEBI", returntype = "HMDB") {
 
     mapped <- c()
