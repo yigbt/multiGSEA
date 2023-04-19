@@ -25,7 +25,7 @@
 #' pathways <- graphite::pathways("mmusculus", "kegg")[[1]]
 #' getFeatures(pathways, which = "metabolites", org = "mmusculus", returntype = "HMDB")
 #'
-#' pathways <- graphite::pathways("mmusculus", "kegg")
+#' pathways <- graphite::pathways("mmusculus", "kegg")[[1]]
 #' getFeatures(pathways, which = "proteins", org = "mmusculus", returntype = "SYMBOL")
 #' }
 #'
