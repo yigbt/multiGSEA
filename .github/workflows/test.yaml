@@ -61,5 +61,6 @@ jobs:
         with:
           upload-snapshots: true
           error-on: '"note"'
+          ref: master
         env:
           _R_CHECK_FORCE_SUGGESTS_: false
