@@ -43,7 +43,7 @@ jobs:
 
       - name: Show diff
         if: failure()
-        run: git diff | tee > diff.txt
+        run: git diff | tee diff.txt
 
       - uses: actions/upload-artifact@v3
         if: failure()
