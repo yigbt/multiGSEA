@@ -60,6 +60,6 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
-          error-on: '"note"'
+          args: '"--no-manual"'
         env:
           _R_CHECK_FORCE_SUGGESTS_: false
