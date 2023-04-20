@@ -261,7 +261,7 @@ getMetaboliteMapping <- function( features, keytype, returntype = "HMDB") {
         dplyr::distinct()
       colnames( SUBmappingTable) <- c("Original", "Mapped")
 
-      SUBmappingTable %>% dplyr::pull( Mapped)
+      SUBmappingTable %>% dplyr::pull("Mapped")
 
     },
     error = function(cond) {
