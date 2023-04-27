@@ -1,3 +1,8 @@
+<!-- badges: start -->
+  [![R-CMD-check](https://github.com/yigbt/multiGSEA/actions/workflows/test.yaml/badge.svg)](https://github.com/yigbt/multiGSEA/actions/workflows/test.yaml)
+  <!-- badges: end -->
+
+
 # The `multiGSEA` `R` package
 
 ## Authors
