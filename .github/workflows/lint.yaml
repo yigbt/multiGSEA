@@ -1,0 +1,52 @@
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+concurrency:
+  # Group runs by PR, but keep runs on the default branch separate
+  # because we do not want to cancel ToolShed uploads
+  group: lint-${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && github.run_number || github.ref }}
+  cancel-in-progress: true
+
+name: lint
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    # env:
+    #   GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            any::styler
+            any::roxygen2
+          # needs: coverage
+
+      - name: Run styler
+        run: |
+          library(styler)
+          result <- style_pkg(strict = TRUE)
+          if(nrow(subset(result, changed == TRUE)) > 0){
+            stop("lint fail")
+          }
+        shell: Rscript {0}
+
+      - name: Show diff
+        if: failure()
+        run: git diff | tee diff.txt
+
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: 'styler lint report'
+          path: diff.txt
