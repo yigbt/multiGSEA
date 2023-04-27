@@ -13,6 +13,6 @@ loadLocal(filename)
 Content of file.
 }
 \description{
-Use the readRDS function to load read the given file which should be in RDS
+Use the readRDS function to load the given file which should be in RDS
 format.
 }

@@ -38,7 +38,7 @@ names(ranks$proteome) <- proteome$Symbol
 es <- multiGSEA(pathways, ranks)
 
 extractPvalues(
-    enrichmentScores = es,
-    pathwayNames = names(pathways[[1]])
+  enrichmentScores = es,
+  pathwayNames = names(pathways[[1]])
 )
 }

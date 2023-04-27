@@ -20,7 +20,7 @@ three times in a list, it will be renamed to foo_1, foo_2, and foo_3,
 respectively.
 }
 \examples{
-l <- c( "foo", "bar", "foo", "bars")
-rename_duplicates( l)
+l <- c("foo", "bar", "foo", "bars")
+rename_duplicates(l)
 
 }

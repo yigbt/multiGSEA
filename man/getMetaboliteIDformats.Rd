@@ -13,6 +13,6 @@ getMetaboliteIDformats(pathways)
 List of metabolite ID formats.
 }
 \description{
-This helper function extracts all used ID formats in all pathways 
+This helper function extracts all used ID formats in all pathways
 and returns a nested list for each pathway database.
 }

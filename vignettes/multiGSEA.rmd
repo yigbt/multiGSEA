@@ -59,15 +59,14 @@ Hence, the best way to install the package is via `BiocManager`. Start R
 (>=4.0.0) and run the following commands:
 
 ```{r bioconductor, eval=FALSE}
-
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+  install.packages("BiocManager")
+}
 
 # The following initializes usage of Bioc devel
-BiocManager::install(version='devel')
+BiocManager::install(version = "devel")
 
 BiocManager::install("multiGSEA")
-
 ```
 
 Alternatively, the `multiGSEA` package is hosted on our github page
@@ -75,10 +74,8 @@ https://github.com/yigbt/multiGSEA and can be installed via the
 `devtools` package:
 
 ```{r devtools, eval=FALSE}
-
 install.packages("devtools")
 devtools::install_github("https://github.com/yigbt/multiGSEA")
-
 ```
 
 Once installed, just load the `multiGSEA` package with:
@@ -111,7 +108,7 @@ omics data was measured in mouse or rat, we would need the packages
 respectively. 
 
 ```{r load_mapping_library, results='hide', warning=FALSE, message=FALSE}
-library( "org.Hs.eg.db")
+library("org.Hs.eg.db")
 ```
 
 In principle, `multiGSEA` is able to deal with 11 different model organisms.
@@ -121,30 +118,37 @@ their respective `AnnotationDbi` package is shown in Table
 
 ```{r organismsTable, results='asis', echo=FALSE}
 caption <- "Supported organisms, their abbreviations being used in `multiGSEA`,
-            and mapping database that are needed for feature conversion. 
+            and mapping database that are needed for feature conversion.
             Supported abbreviations can be seen with `getOrganisms()`"
-df <- data.frame( Organisms = c( "Human", "Mouse", "Rat", "Dog", "Cow", "Pig",
-                                 "Chicken", "Zebrafish", "Frog", "Fruit Fly", 
-                                 "C.elegans"),
-                  Abbreviations = c( "hsapiens", "mmusculus", "rnorvegicus", 
-                                    "cfamiliaris", "btaurus", "sscrofa", 
-                                    "ggallus", "drerio", "xlaevis", 
-                                    "dmelanogaster", "celegans"),
-                  Mapping = c( "org.Hs.eg.db", "org.Mm.eg.db", "org.Rn.eg.db",
-                               "org.Cf.eg.db", "org.Bt.eg.db", "org.Ss.eg.db",
-                               "org.Gg.eg.db", "org.Xl.eg.db", "org.Dr.eg.db",
-                               "org.Dm.eg.db", "org.Ce.eg.db"))
+df <- data.frame(
+  Organisms = c(
+    "Human", "Mouse", "Rat", "Dog", "Cow", "Pig",
+    "Chicken", "Zebrafish", "Frog", "Fruit Fly",
+    "C.elegans"
+  ),
+  Abbreviations = c(
+    "hsapiens", "mmusculus", "rnorvegicus",
+    "cfamiliaris", "btaurus", "sscrofa",
+    "ggallus", "drerio", "xlaevis",
+    "dmelanogaster", "celegans"
+  ),
+  Mapping = c(
+    "org.Hs.eg.db", "org.Mm.eg.db", "org.Rn.eg.db",
+    "org.Cf.eg.db", "org.Bt.eg.db", "org.Ss.eg.db",
+    "org.Gg.eg.db", "org.Xl.eg.db", "org.Dr.eg.db",
+    "org.Dm.eg.db", "org.Ce.eg.db"
+  )
+)
 
-knitr::kable( df, caption = caption)
-
+knitr::kable(df, caption = caption)
 ```
 
 To run the analysis of this vignette, load the installed version of
 `multiGSEA`.
 
 ```{r load_multiGSEA_package, results='hide', message=FALSE, warning=FALSE}
-library( multiGSEA)
-library( magrittr)
+library(multiGSEA)
+library(magrittr)
 ```
 
 Load the omics data for each layer where an enrichment should be calculated.
@@ -152,16 +156,14 @@ The example data is provided within the package and already preprocessed such
 that we have log2 transformed fold changes and their associated p-values.
 
 ```{r load_omics_data}
-
 # load transcriptomic features
-data( transcriptome)
+data(transcriptome)
 
 # load proteomic features
-data( proteome)
+data(proteome)
 
 # load metabolomic features
-data( metabolome)
-
+data(metabolome)
 ```
 
 
@@ -186,14 +188,14 @@ The header of the data frame can be seen in Table \@ref(tab:omicsTable):
 
 ```{r omicsTable, results='asis', echo=FALSE}
 caption <- "Structure of the necessary omics data. For each layer
-            (here: transcriptome), feature IDs, log2FCs, and p-values 
+            (here: transcriptome), feature IDs, log2FCs, and p-values
             are needed."
 
-knitr::kable( 
-    transcriptome %>% 
-    dplyr::arrange( Symbol) %>% 
-    dplyr::slice( 1:6), 
-    caption = caption
+knitr::kable(
+  transcriptome %>%
+    dplyr::arrange(Symbol) %>%
+    dplyr::slice(1:6),
+  caption = caption
 )
 ```
 
@@ -219,38 +221,41 @@ shown by Zyla _et al._ [@Zyla:2017], the choice of the applied metric
 might have a big impact on the outcome of your analysis.
 
 ```{r rank_features, results='hide'}
-
 # create data structure
-omics_data <- initOmicsDataStructure( layer = c("transcriptome", 
-                                                "proteome",
-                                                "metabolome"))
+omics_data <- initOmicsDataStructure(layer = c(
+  "transcriptome",
+  "proteome",
+  "metabolome"
+))
 
 ## add transcriptome layer
-omics_data$transcriptome <- rankFeatures( transcriptome$logFC, 
-                                          transcriptome$pValue)
-names( omics_data$transcriptome) <- transcriptome$Symbol
+omics_data$transcriptome <- rankFeatures(
+  transcriptome$logFC,
+  transcriptome$pValue
+)
+names(omics_data$transcriptome) <- transcriptome$Symbol
 
 ## add proteome layer
 omics_data$proteome <- rankFeatures(proteome$logFC, proteome$pValue)
-names( omics_data$proteome) <- proteome$Symbol
+names(omics_data$proteome) <- proteome$Symbol
 
 ## add metabolome layer
 ## HMDB features have to be updated to the new HMDB format
 omics_data$metabolome <- rankFeatures(metabolome$logFC, metabolome$pValue)
-names( omics_data$metabolome) <- metabolome$HMDB
-names( omics_data$metabolome) <- gsub( "HMDB", "HMDB00", 
-                                       names( omics_data$metabolome))
-
+names(omics_data$metabolome) <- metabolome$HMDB
+names(omics_data$metabolome) <- gsub(
+  "HMDB", "HMDB00",
+  names(omics_data$metabolome)
+)
 ```
 
 The first elements of each omics layer are shown below:
 
 ```{r omics_short}
-
-omics_short <- lapply( names( omics_data), function( name){ 
-                        head( omics_data[[name]])
-                      })
-names( omics_short) <- names( omics_data)
+omics_short <- lapply(names(omics_data), function(name) {
+  head(omics_data[[name]])
+})
+names(omics_short) <- names(omics_data)
 omics_short
 ```
 
@@ -261,25 +266,25 @@ layer we are interested in before pathway definitions are downloaded
 and features are mapped to the desired format.
 
 ```{r calculate_enrichment, results='hide', message=FALSE, warning=FALSE}
+databases <- c("kegg", "reactome")
+layers <- names(omics_data)
 
-databases <- c( "kegg", "reactome")
-layers <- names( omics_data)
-
-pathways <- getMultiOmicsFeatures( dbs = databases, layer = layers,
-                                   returnTranscriptome = "SYMBOL",
-                                   returnProteome = "SYMBOL",
-                                   returnMetabolome = "HMDB",
-                                   useLocal = FALSE)
+pathways <- getMultiOmicsFeatures(
+  dbs = databases, layer = layers,
+  returnTranscriptome = "SYMBOL",
+  returnProteome = "SYMBOL",
+  returnMetabolome = "HMDB",
+  useLocal = FALSE
+)
 ```
 
 The first two pathway definitions of each omics layer are shown below:
 
 ```{r pathways_short}
-
-pathways_short <- lapply( names( pathways), function( name){
-                          head( pathways[[name]], 2)
-                        })
-names( pathways_short) <- names( pathways)
+pathways_short <- lapply(names(pathways), function(name) {
+  head(pathways[[name]], 2)
+})
+names(pathways_short) <- names(pathways)
 pathways_short
 ```
 
@@ -293,11 +298,9 @@ step we can use the `multiGSEA` function to calculate the enrichment for all
 omics layer separately.
 
 ```{r run_enrichment, results='hide', message=FALSE, warning=FALSE}
-
 # use the multiGSEA function to calculate the enrichment scores
 # for all omics layer at once.
-enrichment_scores <- multiGSEA( pathways, omics_data)
-
+enrichment_scores <- multiGSEA(pathways, omics_data)
 ```
 
 The enrichment score data structure is a list containing sublists named
@@ -324,15 +327,15 @@ opposite direction by favoring large p-values [@Edgington:1972]. Those methods
 can be applied by setting the parameter `method` to "fisher" or "edgington".
 
 ```{r combine_pvalues}
+df <- extractPvalues(
+  enrichmentScores = enrichment_scores,
+  pathwayNames = names(pathways[[1]])
+)
 
-df <- extractPvalues( enrichmentScores = enrichment_scores,
-                      pathwayNames = names( pathways[[1]]))
+df$combined_pval <- combinePvalues(df)
+df$combined_padj <- p.adjust(df$combined_pval, method = "BH")
 
-df$combined_pval <- combinePvalues( df)
-df$combined_padj <- p.adjust( df$combined_pval, method = "BH")
-
-df <- cbind( data.frame( pathway = names( pathways[[1]])), df)
-
+df <- cbind(data.frame(pathway = names(pathways[[1]])), df)
 ```
 
 Finally, print the pathways sorted based on their combined adjusted p-values.
@@ -342,17 +345,17 @@ For displaying reasons, only the adjusted p-values are shown in Table
 ```{r resultTable, results='asis', echo=FALSE}
 caption <- "Table summarizing the top 15 pathways where we can calculate an
             enrichment for all three layers . Pathways from KEGG, Reactome,
-            and BioCarta are listed based on their aggregated adjusted p-value. 
-            Corrected p-values are displayed for each omics layer separately and 
+            and BioCarta are listed based on their aggregated adjusted p-value.
+            Corrected p-values are displayed for each omics layer separately and
             aggregated by means of the Stouffer's Z-method."
 
-knitr::kable( 
-    df %>% 
-    dplyr::arrange( combined_padj) %>% 
-    dplyr::filter( !is.na(metabolome_padj) ) %>%
-    dplyr::select( c( pathway, transcriptome_padj, proteome_padj, metabolome_padj, combined_pval)) %>% 
-    dplyr::slice( 1:15),
-    caption = caption
+knitr::kable(
+  df %>%
+    dplyr::arrange(combined_padj) %>%
+    dplyr::filter(!is.na(metabolome_padj)) %>%
+    dplyr::select(c(pathway, transcriptome_padj, proteome_padj, metabolome_padj, combined_pval)) %>%
+    dplyr::slice(1:15),
+  caption = caption
 )
 ```
 
@@ -368,17 +371,15 @@ In the following example, HALLMARK gene sets are retrieved from `MSigDB` and
 used to create a transcriptomics input list:
 
 ```{r msigdbr, eval=FALSE}
-
 library(msigdbr)
 library(dplyr)
 
 hallmark <- msigdbr(species = "Rattus norvegicus", category = "H") %>%
-  dplyr::select( gs_name, ensembl_gene) %>%
-  dplyr::filter( !is.na(ensembl_gene)) %>%
-  unstack( ensembl_gene ~ gs_name)
+  dplyr::select(gs_name, ensembl_gene) %>%
+  dplyr::filter(!is.na(ensembl_gene)) %>%
+  unstack(ensembl_gene ~ gs_name)
 
-pathways <- list( "transcriptome" = hallmark)
-
+pathways <- list("transcriptome" = hallmark)
 ```
 
 **Please note**, feature sets across multiple omics layers have to be in the

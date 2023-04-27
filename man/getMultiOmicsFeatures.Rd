@@ -55,22 +55,22 @@ enrichment.
 \examples{
 
 getMultiOmicsFeatures(
-    dbs = c("kegg"),
-    layer = c("transcriptome", "proteome"),
-    organism = "hsapiens"
+  dbs = c("kegg"),
+  layer = c("transcriptome", "proteome"),
+  organism = "hsapiens"
 )
 \donttest{
 getMultiOmicsFeatures(
-    dbs = c("kegg", "reactome"),
-    layer = c("transcriptome", "metabolome"),
-    organism = "mmusculus"
+  dbs = c("kegg", "reactome"),
+  layer = c("transcriptome", "metabolome"),
+  organism = "mmusculus"
 )
 
 getMultiOmicsFeatures(
-    dbs = c("reactome"),
-    layer = c("proteome"),
-    organism = "rnorvegicus",
-    returnProteome = "ENTREZID"
+  dbs = c("reactome"),
+  layer = c("proteome"),
+  organism = "rnorvegicus",
+  returnProteome = "ENTREZID"
 )
 }
 }

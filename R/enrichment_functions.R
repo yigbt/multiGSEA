@@ -36,16 +36,14 @@
 #'
 #' @export
 multiGSEA <- function(pathways, ranks, eps = 0) {
+  # Go through all omics layer.
+  es <- lapply(names(pathways), function(omics) {
+    fgsea::fgseaMultilevel(pathways[[omics]], ranks[[omics]], eps = eps)
+  })
 
-    # Go through all omics layer.
-    es <- lapply(names(pathways), function(omics) {
-        fgsea::fgseaMultilevel(pathways[[omics]], ranks[[omics]], eps = eps)
-    })
+  names(es) <- names(pathways)
 
-    names(es) <- names(pathways)
-
-    return(es)
-    
+  return(es)
 }
 
 
@@ -80,31 +78,29 @@ multiGSEA <- function(pathways, ranks, eps = 0) {
 #' es <- multiGSEA(pathways, ranks)
 #'
 #' extractPvalues(
-#'     enrichmentScores = es,
-#'     pathwayNames = names(pathways[[1]])
+#'   enrichmentScores = es,
+#'   pathwayNames = names(pathways[[1]])
 #' )
 #' @export
 extractPvalues <- function(enrichmentScores, pathwayNames) {
+  # Go through all the pathways
+  res <- lapply(pathwayNames, function(name) {
+    # Go through all the possible omics layer
+    unlist(lapply(names(enrichmentScores), function(y) {
+      df <- enrichmentScores[[y]][which(enrichmentScores[[y]]$pathway == name), c(2, 3)]
+      if (nrow(df) == 0) {
+        df <- data.frame(pval = NA, padj = NA)
+      }
+      names(df) <- paste0(y, "_", names(df))
+      df
+    }))
+  })
 
-    # Go through all the pathways
-    res <- lapply(pathwayNames, function(name) {
+  # Combine list elements to data frame 
+  # and assign pathway names as rownames
+  res <- data.frame(do.call(rbind, res))
 
-        # Go through all the possible omics layer
-        unlist( lapply(names(enrichmentScores), function(y) {
-            df <- enrichmentScores[[y]][which(enrichmentScores[[y]]$pathway == name), c(2, 3)]
-            if (nrow(df) == 0) {
-                df <- data.frame(pval = NA, padj = NA)
-            }
-            names(df) <- paste0(y, "_", names(df))
-            df
-        }))
-    })
-
-    # Combine the list elements to a data frame and assign the pathway names as rownames
-    res <- data.frame(do.call(rbind, res))
-
-    return(res)
-    
+  return(res)
 }
 
 
@@ -145,53 +141,50 @@ extractPvalues <- function(enrichmentScores, pathwayNames) {
 #'
 #' @export
 combinePvalues <- function(df, method = "stouffer", weights = NULL) {
-    
-    method <- tolower(method)
-    if (!method %in% c("stouffer", "fisher", "edgington")) {
-        stop("You can chose between the 'stouffer', 'edgington', 
+  method <- tolower(method)
+  if (!method %in% c("stouffer", "fisher", "edgington")) {
+    stop("You can chose between the 'stouffer', 'edgington',
               and 'fisher' method to combine p-values.",
-            call. = FALSE
-        )
-    }
+      call. = FALSE
+    )
+  }
 
-    cols <- grep("padj", colnames(df))
+  cols <- grep("padj", colnames(df))
 
-    pvals <- apply(df, 1, function(row) {
-        row <- row[cols]
-        row <- row[!is.na(row)]
+  pvals <- apply(df, 1, function(row) {
+    row <- row[cols]
+    row <- row[!is.na(row)]
+
+    if (length(row) >= 2) {
+      if (method == "fisher") {
+        p <- metap::sumlog(row)
+        p$p
+      } else if (method == "edgington") {
+        p <- metap::sump(row)
+        p$p
+      } else {
+        ## sumz allows only p-values smaller than 1
+        row <- row[row > 0 & row < 1]
 
         if (length(row) >= 2) {
-            if (method == "fisher") {
-                p <- sumlog(row)
-                p$p
-            } else if (method == "edgington") {
-                p <- sump(row)
-                p$p
-            } else {
-
-                ## sumz allows only p-values smaller than 1
-                row <- row[row > 0 & row < 1]
-
-                if (length(row) >= 2) {
-                    if (length(weights) > 0) {
-                        p <- sumz(row, weights = weights)
-                    } else {
-                        p <- sumz(row)
-                    }
-                    p$p
-                } else if (length(row == 1)) {
-                    row[1]
-                } else {
-                    NA
-                }
-            }
-        } else if (length(row) == 1) {
-            row[1]
+          if (length(weights) > 0) {
+            p <- metap::sumz(row, weights = weights)
+          } else {
+            p <- metap::sumz(row)
+          }
+          p$p
+        } else if (length(row == 1)) {
+          row[1]
         } else {
-            NA
+          NA
         }
-    })
+      }
+    } else if (length(row) == 1) {
+      row[1]
+    } else {
+      NA
+    }
+  })
 
-    return(pvals)
-    
+  return(pvals)
 }
