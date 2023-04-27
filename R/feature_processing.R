@@ -268,7 +268,7 @@ getMetaboliteMapping <- function(features, keytype, returntype = "HMDB") {
         dplyr::distinct()
       colnames(SUBmappingTable) <- c("Original", "Mapped")
 
-      SUBmappingTable %>% dplyr::pull(Mapped)
+      SUBmappingTable %>% dplyr::pull("Mapped")
     },
     error = function(cond) {
       return(
@@ -616,7 +616,7 @@ getIDMappingDatabase <- function(organism) {
 #' logFC <- rnorm(10)
 #' pvalues <- runif(10)
 #' rankFeatures(logFC, pvalues)
-#' 
+#'
 #' @export
 rankFeatures <- function(logFC, pvalues, base = 10) {
   return(sign(logFC) * -log(pvalues, base = base))
@@ -670,7 +670,7 @@ initOmicsDataStructure <- function(layer = c("transcriptome", "proteome", "metab
 #' @param pathways List of pathway databases and their pathway definition.
 #'
 #' @return List of metabolite ID formats.
-#' 
+#'
 #' @importFrom graphite nodes
 getMetaboliteIDformats <- function(pathways) {
   n1 <- lapply(names(pathways), function(dbs) {

@@ -96,7 +96,7 @@ extractPvalues <- function(enrichmentScores, pathwayNames) {
     }))
   })
 
-  # Combine list elements to data frame 
+  # Combine list elements to data frame
   # and assign pathway names as rownames
   res <- data.frame(do.call(rbind, res))
 
