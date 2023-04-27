@@ -40,9 +40,9 @@ features <- gsub("UNIPROT:", "", features)
 getGeneMapping(features, keytype = "UNIPROT", org = "rnorvegicus")
 
 getGeneMapping(features,
-    keytype = "UNIPROT",
-    org = "rnorvegicus",
-    returntype = "ENSEMBL"
+  keytype = "UNIPROT",
+  org = "rnorvegicus",
+  returntype = "ENSEMBL"
 )
 }
 
