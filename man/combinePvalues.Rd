@@ -4,7 +4,7 @@
 \alias{combinePvalues}
 \title{Calculate a combined p-value for multiple omics layer.}
 \usage{
-combinePvalues(df, method = "stouffer", weights = NULL)
+combinePvalues(df, method = "stouffer", col_pattern = "pval", weights = NULL)
 }
 \arguments{
 \item{df}{Data frame where rows represent a certain pathway or gene set and
@@ -13,6 +13,9 @@ omics layer.}
 
 \item{method}{String that specifies the method to combine multiple p-values.
 Default: "stouffer" Options: "stouffer", "fisher", "edgington"}
+
+\item{col_pattern}{String of the pattern that specifies the columns to be
+combined. Default: "pval", Options: "pval", "padj" (legacy)}
 
 \item{weights}{List of weights that will be used in a weighted Stouffer
 method.}
