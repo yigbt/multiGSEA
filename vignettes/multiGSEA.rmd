@@ -338,6 +338,17 @@ df$combined_padj <- p.adjust(df$combined_pval, method = "BH")
 df <- cbind(data.frame(pathway = names(pathways[[1]])), df)
 ```
 
+**Please note:** In former versions of `multiGSEA`, adjusted p-values of
+individual omics-layers have been combined. The correction for multiple testing
+prior to the p-value combination will, however, violate the assumptions about
+p-values of certain combination methods (e.g., Fisher's combined probability
+test).
+
+Therefore, **multiGSEA uses p-values for combination from RELEASE 3.18**.
+To keep previous results reproducible, we introduced the `col_pattern` parameter
+which can be set to `padj` to use adjusted p-values.
+
+
 Finally, print the pathways sorted based on their combined adjusted p-values.
 For displaying reasons, only the adjusted p-values are shown in Table
 \@ref(tab:resultTable).

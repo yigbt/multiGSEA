@@ -117,6 +117,8 @@ extractPvalues <- function(enrichmentScores, pathwayNames) {
 #'   omics layer.
 #' @param method String that specifies the method to combine multiple p-values.
 #'   Default: "stouffer" Options: "stouffer", "fisher", "edgington"
+#' @param col_pattern String of the pattern that specifies the columns to be
+#'   combined. Default: "pval", Options: "pval", "padj" (legacy)
 #' @param weights List of weights that will be used in a weighted Stouffer
 #'   method.
 #'
@@ -140,7 +142,7 @@ extractPvalues <- function(enrichmentScores, pathwayNames) {
 #' @importFrom metap sumz sumlog sump
 #'
 #' @export
-combinePvalues <- function(df, method = "stouffer", weights = NULL) {
+combinePvalues <- function(df, method = "stouffer", col_pattern = "pval", weights = NULL) {
   method <- tolower(method)
   if (!method %in% c("stouffer", "fisher", "edgington")) {
     stop("You can chose between the 'stouffer', 'edgington',
@@ -149,10 +151,16 @@ combinePvalues <- function(df, method = "stouffer", weights = NULL) {
     )
   }
 
-  cols <- grep("padj", colnames(df))
+  if (!col_pattern %in% c("pval", "padj")) {
+    stop("You can chose between 'pval' and 'padj' (legacy),
+          to select columns for combining p-values.",
+      call. = FALSE
+    )
+  }
 
-  pvals <- apply(df, 1, function(row) {
-    row <- row[cols]
+  cols <- grep(col_pattern, colnames(df))
+
+  pvals <- apply(df[cols], 1, function(row) {
     row <- row[!is.na(row)]
 
     if (length(row) >= 2) {
