@@ -160,7 +160,7 @@ combinePvalues <- function(df, method = "stouffer", col_pattern = "pval", weight
 
   cols <- grep(col_pattern, colnames(df))
 
-  pvals <- apply(df[cols], 1, function(row) {
+  pvals <- apply(df[,cols], 1, function(row) {
     row <- row[!is.na(row)]
 
     if (length(row) >= 2) {
@@ -196,3 +196,4 @@ combinePvalues <- function(df, method = "stouffer", col_pattern = "pval", weight
 
   return(pvals)
 }
+
