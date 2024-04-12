@@ -1,7 +1,7 @@
 Package: multiGSEA
 Type: Package
 Title: Combining GSEA-based pathway enrichment with multi omics data integration
-Version: 1.12.2
+Version: 1.12.3
 Date: 2020-03-05
 Authors@R: c(
     person( "Sebastian", "Canzler", email = "sebastian.canzler@ufz.de", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7935-9582")),
