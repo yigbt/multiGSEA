@@ -62,3 +62,12 @@
   \item List all available databases in error message.
 
 }}
+
+\section{ Changes in version 1.13.1 (2024-04-26)}{
+
+\itemize{
+
+  \item Utilize by default non-adjusted single-omics p-values for aggregation into a composite p-value. Adjustment for multiple testing will be done on the combined multi-omics p-values.
+  \item Inlcude legacy option for p-value combination to ensure reproducibility.
+
+}}
