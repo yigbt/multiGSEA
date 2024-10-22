@@ -71,3 +71,11 @@
   \item Inlcude legacy option for p-value combination to ensure reproducibility.
 
 }}
+
+\section{ Changes in version 1.15.1 (2024-10-22)}{
+
+\itemize{
+
+  \item Remove proteomics feature with empty identifier to prevent errors in vignette building.
+
+}}
